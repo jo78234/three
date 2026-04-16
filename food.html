@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>慢病综合饮食处方系统_V7.1.1_食物交换优化版</title>
+<style>
+:root{--primary:#2563eb;--soft:#dbeafe;--bg:#f6faff;--card:#fff;--text:#1f2937;--muted:#64748b;--border:#dbe5f1;--shadow:0 10px 30px rgba(37,99,235,.08);--radius:18px}
+*{box-sizing:border-box}
+body{margin:0;font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,#eef5ff 0%,#f8fbff 40%,#f5f7fb 100%);color:var(--text)}
+.app{max-width:980px;margin:0 auto;min-height:100vh;padding-bottom:96px}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(248,251,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:16px 16px 10px}
+.brand{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand h1{margin:0;font-size:22px}.brand small{display:block;color:var(--muted);margin-top:4px}
+.badge{padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--primary);font-size:12px;font-weight:700}
+.screen{display:none;padding:16px}.screen.active{display:block}
+.hero{background:linear-gradient(135deg,#2563eb,#3b82f6 60%,#60a5fa);color:#fff;padding:22px;border-radius:24px;box-shadow:var(--shadow);margin-bottom:14px}
+.hero h2{margin:0 0 8px;font-size:24px}.hero p{margin:0;font-size:14px;line-height:1.7;color:rgba(255,255,255,.94)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
+.section-title{margin:0 0 10px;font-size:16px}.tiny,label,.muted,.list li{color:var(--muted);font-size:13px;line-height:1.65}.tiny{font-size:12px}
+.grid-2,.grid-3,.grid-4{display:grid;gap:12px}.grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
+.kpi{background:#f8fbff;border:1px dashed #bfdbfe;border-radius:16px;padding:12px;text-align:center}.kpi strong{display:block;color:var(--primary);font-size:18px;margin-bottom:4px}
+.form-group{margin-bottom:14px} input,select{width:100%;border:1px solid var(--border);border-radius:14px;padding:12px 14px;font-size:14px;background:#fff;color:var(--text);outline:none;margin-top:6px}
+input:focus,select:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(37,99,235,.08)}
+button{border:none;border-radius:14px;padding:12px 16px;background:var(--primary);color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+.btn-secondary{background:#e5e7eb;color:#334155}.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.notice{padding:12px 14px;border-radius:14px;background:#eff6ff;color:#1d4ed8;font-size:13px;line-height:1.7;margin-bottom:10px}
+.warn{background:#fff7ed;color:#c2410c}.danger{background:#fef2f2;color:#b91c1c}
+.result-box{background:linear-gradient(180deg,#fff,#f8fbff);border:1px solid #dbeafe;border-radius:18px;padding:14px;margin-top:12px}
+.meal-item,.food-item{border:1px solid var(--border);background:#fff;border-radius:14px;padding:12px;margin-bottom:10px}.meal-item strong,.food-item strong{display:block;margin-bottom:6px}
+.tag{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-right:8px;margin-bottom:8px}.green{background:#dcfce7;color:#166534}.yellow{background:#fef3c7;color:#92400e}.red{background:#fee2e2;color:#991b1b}.blue{background:#dbeafe;color:#1d4ed8}
+.bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:980px;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 8px 10px;z-index:20}
+.tab{background:transparent;color:#64748b;border-radius:14px;padding:10px 6px;font-size:12px}.tab.active{background:#eff6ff;color:var(--primary);font-weight:700}
+.empty{padding:18px;text-align:center;color:var(--muted);background:#f8fafc;border-radius:14px;border:1px dashed #cbd5e1}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div>
+        <h1>慢病综合饮食处方系统</h1>
+        <small>V7.1.3 食物交换优化版：修复地区模式选择</small>
+      </div>
+      <div class="badge">V7.1.3</div>
+    </div>
+  </div>
+
+  <section id="home" class="screen active">
+    <div class="hero">
+      <h2>按指南地区食谱做动态处方</h2>
+      <p>已删除天津早餐模式，采用地区模式。支持东北、西北、华北、华东、华中、西南、华南及清淡通用模板；按糖尿病足 1/5、2/5、2/5 或通用糖尿病 3/10、4/10、3/10 分餐，并根据 CKD、心功能分级、高血压、高脂血症、贫血及高纤维蛋白原血症动态调整。</p>
+    </div>
+    <div class="grid-4 card">
+      <div class="kpi"><strong id="homeKcal">--</strong><span class="tiny">配餐总目标 kcal</span></div>
+      <div class="kpi"><strong id="homeProtein">--</strong><span class="tiny">每日蛋白 g</span></div>
+      <div class="kpi"><strong id="homeBMI">--</strong><span class="tiny">BMI</span></div>
+      <div class="kpi"><strong id="homeBodyType">--</strong><span class="tiny">体型</span></div>
+    </div>
+    <div class="card">
+      <h3 class="section-title">数据库与规则</h3>
+      <div class="notice" id="dbInfo"></div>
+    </div>
+  </section>
+
+  
+<section id="assessment" class="screen">
+    <div class="card">
+      <h3 class="section-title">患者评估</h3>
+
+      <div class="notice">建议按临床顺序录入：基本信息 → 肾代谢状态 → 心血管状态 → 血液与营养状态。系统将自动按糖尿病为基础、CKD优先、心功能和高血压叠加限制的逻辑生成方案。</div>
+
+      <h4 class="section-title">一、基本信息</h4>
+      <div class="grid-4">
+        <div class="form-group"><label>姓名</label><input id="name" placeholder="如：王泽宇"></div>
+        <div class="form-group"><label>身高（cm）</label><input id="height" type="number" placeholder="175"></div>
+        <div class="form-group"><label>体重（kg）</label><input id="weight" type="number" placeholder="70"></div>
+        <div class="form-group"><label>系统模式</label>
+          <select id="mode">
+            <option value="通用糖尿病">通用糖尿病</option>
+            <option value="糖尿病足" selected>糖尿病足</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="form-group"><label>地区模式</label><select id="regionMode">
+<option value="东北地区">东北地区</option>
+<option value="西北地区">西北地区</option>
+<option value="华北地区">华北地区</option>
+<option value="华东地区">华东地区</option>
+<option value="华中地区">华中地区</option>
+<option value="西南地区">西南地区</option>
+<option value="华南地区">华南地区</option>
+<option value="清淡通用">清淡通用</option>
+</select></div>
+        <div class="form-group"><label>劳动强度</label>
+          <select id="activity">
+            <option value="卧床">卧床</option>
+            <option value="轻体力劳动" selected>轻体力劳动</option>
+            <option value="中等体力劳动">中等体力劳动</option>
+            <option value="重体力劳动">重体力劳动</option>
+          </select>
+        </div>
+        <div class="form-group"><label>水肿/明显液体潴留</label>
+          <select id="edema">
+            <option value="无" selected>无</option>
+            <option value="有">有</option>
+          </select>
+        </div>
+      </div>
+
+      <h4 class="section-title">二、肾代谢状态</h4>
+      <div class="grid-3">
+        <div class="form-group"><label>CKD状态</label>
+          <select id="ckdStage">
+            <option value="无">无</option>
+            <option value="CKD 1–2期">CKD 1–2期</option>
+            <option value="CKD 3–5期（未透析）">CKD 3–5期（未透析）</option>
+            <option value="血液透析">血液透析</option>
+            <option value="腹膜透析">腹膜透析</option>
+            <option value="肾移植稳定期">肾移植稳定期</option>
+          </select>
+        </div>
+        <div class="form-group"><label>高尿酸/痛风阶段</label>
+          <select id="uricStage">
+            <option value="无">无</option>
+            <option value="高尿酸血症稳定期">高尿酸血症稳定期</option>
+            <option value="痛风急性期">痛风急性期</option>
+            <option value="痛风慢性期">痛风慢性期</option>
+          </select>
+        </div>
+        <div class="form-group"><label>高脂血症类型/程度</label>
+          <select id="lipidStage">
+            <option value="无">无</option>
+            <option value="轻中度">轻中度</option>
+            <option value="重度">重度</option>
+            <option value="高胆固醇血症">高胆固醇血症</option>
+            <option value="高甘油三酯血症">高甘油三酯血症</option>
+            <option value="混合型高脂血症">混合型高脂血症</option>
+          </select>
+        </div>
+      </div>
+
+      <h4 class="section-title">三、心血管状态</h4>
+      <div class="grid-2">
+        <div class="form-group"><label>心功能分级</label>
+          <select id="hfStage">
+            <option value="无">无</option>
+            <option value="心功能I级">心功能I级</option>
+            <option value="心功能II级">心功能II级</option>
+            <option value="心功能III级">心功能III级</option>
+            <option value="心功能IV级">心功能IV级</option>
+          </select>
+        </div>
+        <div class="form-group"><label>高血压分级</label>
+          <select id="htnStage">
+            <option value="无">无</option>
+            <option value="正常高值">正常高值</option>
+            <option value="1级">1级</option>
+            <option value="2级">2级</option>
+            <option value="3级">3级</option>
+          </select>
+        </div>
+      </div>
+
+      <h4 class="section-title">四、血液与营养状态</h4>
+      <div class="grid-4">
+        <div class="form-group"><label>贫血</label>
+          <select id="anemiaStage">
+            <option value="无">无</option>
+            <option value="有">有</option>
+          </select>
+        </div>
+        <div class="form-group"><label>低蛋白血症</label>
+          <select id="hypoProtein">
+            <option value="无">无</option>
+            <option value="有">有</option>
+          </select>
+        </div>
+        <div class="form-group"><label>高纤维蛋白原血症</label>
+          <select id="hyperFibrinogen">
+            <option value="无">无</option>
+            <option value="有">有</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button onclick="fillDemo()">填入示例</button>
+        <button onclick="generatePlan()">生成地区指南处方</button>
+        <button class="btn-secondary" onclick="resetForm()">重置</button>
+      </div>
+    </div>
+    <div id="assessmentPreview" class="card" style="display:none;"></div>
+  </section>
+
+  <section id="plan" class="screen"> class="screen">
+    <div id="planContent" class="card"><div class="empty">请先完成评估并生成方案。</div></div>
+  </section>
+
+  
+<section id="food" class="screen">
+    <div class="card">
+      <h3 class="section-title">食物交换</h3>
+      <div class="notice">不再只按关键词搜索。可按类别、交换份、GI 和并发症条件快速筛选同类可替换食物，也可从方案中一键查看替换建议。</div>
+      <div class="btn-row" style="margin-bottom:10px;">
+        <button id="foodTabExchange" onclick="showFoodTab('exchange')">按类别看交换份</button>
+        <button class="btn-secondary" id="foodTabFilter" onclick="showFoodTab('filter')">条件筛选</button>
+        <button class="btn-secondary" id="foodTabReplace" onclick="showFoodTab('replace')">方案替换</button>
+      </div>
+    </div>
+
+    <div id="foodExchangePanel" class="card">
+      <div class="grid-4">
+        <div class="form-group">
+          <label>食物类别</label>
+          <select id="exchangeCategory" onchange="renderExchangeFoods()">
+            <option value="主食">主食</option>
+            <option value="蔬菜">蔬菜</option>
+            <option value="水果">水果</option>
+            <option value="肉蛋">肉蛋</option>
+            <option value="乳类">乳类</option>
+            <option value="豆类">豆类</option>
+            <option value="油脂">油脂</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>交换份</label>
+          <select id="exchangePortionType" onchange="renderExchangeFoods()">
+            <option value="1">1份（约90 kcal）</option>
+            <option value="0.5">半份</option>
+            <option value="2">2份</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>GI筛选</label>
+          <select id="exchangeGI" onchange="renderExchangeFoods()">
+            <option value="全部">全部</option>
+            <option value="低">低</option>
+            <option value="中">中</option>
+            <option value="高">高</option>
+            <option value="友好">友好</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>疾病限制</label>
+          <select id="exchangeCondition" onchange="renderExchangeFoods()">
+            <option value="通用">通用</option>
+            <option value="CKD">CKD</option>
+            <option value="高尿酸">高尿酸/痛风</option>
+            <option value="高血压">高血压</option>
+            <option value="低脂">低脂</option>
+            <option value="低蛋白">低蛋白</option>
+          </select>
+        </div>
+      </div>
+      <div id="exchangeResult" class="result-box"></div>
+    </div>
+
+    <div id="foodFilterPanel" class="card" style="display:none;">
+      <div class="grid-4">
+        <div class="form-group">
+          <label>类别</label>
+          <select id="filterCategory" onchange="renderFilteredFoods()">
+            <option value="全部">全部</option>
+            <option value="主食">主食</option>
+            <option value="蔬菜">蔬菜</option>
+            <option value="水果">水果</option>
+            <option value="肉蛋">肉蛋</option>
+            <option value="乳类">乳类</option>
+            <option value="豆类">豆类</option>
+            <option value="油脂">油脂</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>热量范围</label>
+          <select id="filterKcal" onchange="renderFilteredFoods()">
+            <option value="全部">全部</option>
+            <option value="90">约90 kcal</option>
+            <option value="45">约45 kcal</option>
+            <option value="180">约180 kcal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>GI</label>
+          <select id="filterGI" onchange="renderFilteredFoods()">
+            <option value="全部">全部</option>
+            <option value="低">低</option>
+            <option value="中">中</option>
+            <option value="高">高</option>
+            <option value="友好">友好</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>并发症条件</label>
+          <select id="filterCondition" onchange="renderFilteredFoods()">
+            <option value="通用">通用</option>
+            <option value="CKD">CKD</option>
+            <option value="高尿酸">高尿酸/痛风</option>
+            <option value="高血压">高血压</option>
+            <option value="低脂">低脂</option>
+            <option value="低蛋白">低蛋白</option>
+          </select>
+        </div>
+      </div>
+      <div id="filterResult" class="result-box"></div>
+    </div>
+
+    <div id="foodReplacePanel" class="card" style="display:none;">
+      <div class="notice">从当前方案里点选一个食物，系统将给出同类别、近似交换份、符合当前患者限制的替换选项。</div>
+      <div id="replaceSource" class="result-box"></div>
+      <div id="replaceResult" class="result-box"><div class="empty">请先生成方案，再从方案食物中选择一个需要替换的项目。</div></div>
+    </div>
+  </section>
+</div>
+
+<nav class="bottom-nav">
+  <button class="tab active" data-target="home" onclick="showScreen('home')">首页</button>
+  <button class="tab" data-target="assessment" onclick="showScreen('assessment')">评估</button>
+  <button class="tab" data-target="plan" onclick="showScreen('plan')">方案</button>
+  <button class="tab" data-target="food" onclick="showScreen('food')">食物</button>
+</nav>
+
+<script>
+const FOODS = [{"name": "米饭", "cat": "主食", "portion": "熟重80g/生重25g", "kcal": 90, "gi": "高", "carb": 20, "protein": 2, "fat": 0.3, "group": "主食"}, {"name": "馒头", "cat": "主食", "portion": "熟重50g/生重25g", "kcal": 90, "gi": "高", "carb": 19, "protein": 3, "fat": 0.5, "group": "主食"}, {"name": "烙饼", "cat": "主食", "portion": "熟重50g/生重25g", "kcal": 90, "gi": "高", "carb": 18, "protein": 3, "fat": 1, "group": "主食"}, {"name": "面包", "cat": "主食", "portion": "熟重25g", "kcal": 90, "gi": "高", "carb": 17, "protein": 3, "fat": 1.5, "group": "主食"}, {"name": "糯米饭", "cat": "主食", "portion": "熟重80g/生重25g", "kcal": 90, "gi": "高", "carb": 17, "protein": 2, "fat": 0.3, "group": "主食"}, {"name": "年糕", "cat": "主食", "portion": "熟重50g", "kcal": 90, "gi": "高", "carb": 20, "protein": 1.5, "fat": 0.2, "group": "主食"}, {"name": "烤红薯", "cat": "主食", "portion": "熟重100g", "kcal": 90, "gi": "高", "carb": 20, "protein": 1.5, "fat": 0.2, "group": "主食"}, {"name": "油条", "cat": "主食", "portion": "熟重25g", "kcal": 90, "gi": "高", "carb": 12, "protein": 2, "fat": 5, "group": "主食"}, {"name": "高粱米饭", "cat": "主食", "portion": "熟重80g/生重25g", "kcal": 90, "gi": "高", "carb": 18, "protein": 2.5, "fat": 0.5, "group": "主食"}, {"name": "小米饭", "cat": "主食", "portion": "熟重80g/生重25g", "kcal": 90, "gi": "高", "carb": 18, "protein": 2.5, "fat": 0.5, "group": "主食"}, {"name": "凉粉", "cat": "主食", "portion": "湿重250g", "kcal": 90, "gi": "高", "carb": 20, "protein": 0.5, "fat": 0.2, "group": "主食"}, {"name": "全麦面包", "cat": "主食", "portion": "熟重50g", "kcal": 90, "gi": "中", "carb": 15, "protein": 4, "fat": 1.2, "group": "主食"}, {"name": "大米粥", "cat": "主食", "portion": "熟重200g/生重25g", "kcal": 90, "gi": "中", "carb": 19, "protein": 1.5, "fat": 0.2, "group": "主食"}, {"name": "粽子", "cat": "主食", "portion": "熟重50g", "kcal": 90, "gi": "中", "carb": 21, "protein": 2, "fat": 0.5, "group": "主食"}, {"name": "饸饹面", "cat": "主食", "portion": "熟重50g", "kcal": 90, "gi": "中", "carb": 18, "protein": 3, "fat": 0.6, "group": "主食"}, {"name": "糯米粥", "cat": "主食", "portion": "熟重200g/生重25g", "kcal": 90, "gi": "中", "carb": 20, "protein": 1.5, "fat": 0.2, "group": "主食"}, {"name": "马铃薯", "cat": "主食", "portion": "生重100g", "kcal": 90, "gi": "中", "carb": 19, "protein": 2, "fat": 0.2, "group": "主食"}, {"name": "小米粥", "cat": "主食", "portion": "熟重200g/生重25g", "kcal": 90, "gi": "中", "carb": 17, "protein": 1.8, "fat": 0.2, "group": "主食"}, {"name": "荞麦面", "cat": "主食", "portion": "熟重50g", "kcal": 90, "gi": "中", "carb": 17, "protein": 4, "fat": 1, "group": "主食"}, {"name": "紫米饭", "cat": "主食", "portion": "熟重80g/生重25g", "kcal": 90, "gi": "低", "carb": 20, "protein": 2.5, "fat": 0.5, "group": "主食"}, {"name": "煮玉米", "cat": "主食", "portion": "熟重100g", "kcal": 90, "gi": "低", "carb": 17, "protein": 3, "fat": 1.2, "group": "主食"}, {"name": "挂面", "cat": "主食", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 19, "protein": 3.5, "fat": 0.5, "group": "主食"}, {"name": "薏米", "cat": "主食", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 18, "protein": 3, "fat": 0.5, "group": "主食"}, {"name": "燕麦片", "cat": "主食", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 20, "protein": 3, "fat": 2, "group": "主食"}, {"name": "蒸红薯", "cat": "主食", "portion": "熟重150g", "kcal": 90, "gi": "低", "carb": 21, "protein": 1.5, "fat": 0.2, "group": "主食"}, {"name": "山药", "cat": "主食", "portion": "生重150g", "kcal": 90, "gi": "低", "carb": 19, "protein": 2, "fat": 0.2, "group": "主食"}, {"name": "春卷", "cat": "主食", "portion": "熟重25g", "kcal": 90, "gi": "低", "carb": 7, "protein": 1.5, "fat": 5, "group": "主食"}, {"name": "芋头", "cat": "主食", "portion": "生重150g", "kcal": 90, "gi": "低", "carb": 20, "protein": 2, "fat": 0.2, "group": "主食"}, {"name": "莲藕", "cat": "主食", "portion": "生重200g", "kcal": 90, "gi": "低", "carb": 20, "protein": 2, "fat": 0.2, "group": "主食"}, {"name": "玉米窝头", "cat": "主食", "portion": "熟重50g/生重25g", "kcal": 90, "gi": "低", "carb": 20, "protein": 3, "fat": 1, "group": "主食"}, {"name": "紫米粥", "cat": "主食", "portion": "熟重200g", "kcal": 90, "gi": "低", "carb": 20, "protein": 1.8, "fat": 0.2, "group": "主食"}, {"name": "菜包子", "cat": "主食", "portion": "熟重50g", "kcal": 90, "gi": "低", "carb": 16, "protein": 3, "fat": 1, "group": "主食"}, {"name": "粉丝", "cat": "主食", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 22, "protein": 0.5, "fat": 0.1, "group": "主食"}, {"name": "苕皮", "cat": "主食", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 23, "protein": 0.5, "fat": 0.1, "group": "主食"}, {"name": "红薯粉条", "cat": "主食", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 23, "protein": 0.5, "fat": 0.1, "group": "主食"}, {"name": "蕨根粉", "cat": "主食", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 21, "protein": 0.5, "fat": 0.1, "group": "主食"}, {"name": "红豆", "cat": "主食", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 17, "protein": 4, "fat": 0.3, "group": "主食"}, {"name": "绿豆", "cat": "主食", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 16, "protein": 4, "fat": 0.3, "group": "主食"}, {"name": "芸豆", "cat": "主食", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 15, "protein": 4, "fat": 0.3, "group": "主食"}, {"name": "魔芋", "cat": "主食", "portion": "湿重1000g", "kcal": 90, "gi": "低", "carb": 21, "protein": 1, "fat": 0.2, "group": "主食"}, {"name": "胡萝卜", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "高", "carb": 10, "protein": 1, "fat": 0.2, "group": "蔬菜"}, {"name": "番茄", "cat": "蔬菜", "portion": "生重300g", "kcal": 45, "gi": "低", "carb": 8, "protein": 2, "fat": 0.3, "group": "蔬菜"}, {"name": "四季豆", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 8, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "大白菜", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 7, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "白萝卜", "cat": "蔬菜", "portion": "生重300g", "kcal": 45, "gi": "低", "carb": 9, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "南瓜", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "高", "carb": 10, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "蒜苗", "cat": "蔬菜", "portion": "生重100g", "kcal": 45, "gi": "中", "carb": 8, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "豌豆", "cat": "蔬菜", "portion": "鲜重50g", "kcal": 45, "gi": "低", "carb": 8, "protein": 2.5, "fat": 0.2, "group": "蔬菜"}, {"name": "荷兰豆", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 7, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "扁豆", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 8, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "毛豆", "cat": "蔬菜", "portion": "生重35g", "kcal": 45, "gi": "低", "carb": 3, "protein": 3, "fat": 1, "group": "蔬菜"}, {"name": "木耳", "cat": "蔬菜", "portion": "湿重150g", "kcal": 45, "gi": "低", "carb": 8, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "绿豆芽", "cat": "蔬菜", "portion": "生重300g", "kcal": 45, "gi": "低", "carb": 6, "protein": 3, "fat": 0.2, "group": "蔬菜"}, {"name": "黄豆芽", "cat": "蔬菜", "portion": "生重100g", "kcal": 45, "gi": "低", "carb": 4, "protein": 3, "fat": 0.2, "group": "蔬菜"}, {"name": "小白菜", "cat": "蔬菜", "portion": "生重300g", "kcal": 45, "gi": "低", "carb": 6, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "韭菜", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 6, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "生菜", "cat": "蔬菜", "portion": "生重400g", "kcal": 45, "gi": "低", "carb": 3, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "圆白菜", "cat": "蔬菜", "portion": "生重250g", "kcal": 45, "gi": "低", "carb": 8, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "芦笋", "cat": "蔬菜", "portion": "生重250g", "kcal": 45, "gi": "低", "carb": 6, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "芹菜", "cat": "蔬菜", "portion": "生重350g", "kcal": 45, "gi": "低", "carb": 6, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "白菜花", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 6, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "茄子", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 9, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "黄瓜", "cat": "蔬菜", "portion": "生重300g", "kcal": 45, "gi": "低", "carb": 8, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "西葫芦", "cat": "蔬菜", "portion": "生重250g", "kcal": 45, "gi": "低", "carb": 8, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "竹笋", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 6, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "青椒", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 9, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "菠菜", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 6, "protein": 3, "fat": 0.3, "group": "蔬菜"}, {"name": "油菜", "cat": "蔬菜", "portion": "生重300g", "kcal": 45, "gi": "低", "carb": 5, "protein": 2.5, "fat": 0.3, "group": "蔬菜"}, {"name": "甜椒", "cat": "蔬菜", "portion": "生重250g", "kcal": 45, "gi": "低", "carb": 8, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "丝瓜", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 8, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "洋葱", "cat": "蔬菜", "portion": "生重100g", "kcal": 45, "gi": "低", "carb": 10, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "海带", "cat": "蔬菜", "portion": "湿重350g", "kcal": 45, "gi": "低", "carb": 7, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "金针菇", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 7, "protein": 3, "fat": 0.2, "group": "蔬菜"}, {"name": "油麦菜", "cat": "蔬菜", "portion": "生重400g", "kcal": 45, "gi": "低", "carb": 6, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "大蒜", "cat": "蔬菜", "portion": "生重35g", "kcal": 45, "gi": "低", "carb": 10, "protein": 1, "fat": 0.2, "group": "蔬菜"}, {"name": "大葱", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 8, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "香菜", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 8, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "紫甘蓝", "cat": "蔬菜", "portion": "熟重150g", "kcal": 45, "gi": "低", "carb": 9, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "娃娃菜", "cat": "蔬菜", "portion": "生重350g", "kcal": 45, "gi": "低", "carb": 6, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "佛手瓜", "cat": "蔬菜", "portion": "生重250g", "kcal": 45, "gi": "低", "carb": 8, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "裙带菜", "cat": "蔬菜", "portion": "湿重100g", "kcal": 45, "gi": "低", "carb": 8, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "紫菜", "cat": "蔬菜", "portion": "干重20g", "kcal": 45, "gi": "低", "carb": 7, "protein": 5, "fat": 0.2, "group": "蔬菜"}, {"name": "生姜", "cat": "蔬菜", "portion": "生重100g", "kcal": 45, "gi": "低", "carb": 9, "protein": 1, "fat": 0.2, "group": "蔬菜"}, {"name": "冬瓜", "cat": "蔬菜", "portion": "生重450g", "kcal": 45, "gi": "低", "carb": 9, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "红苋菜", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 7, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "杏鲍菇", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 9, "protein": 3, "fat": 0.2, "group": "蔬菜"}, {"name": "苦瓜", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 9, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "青萝卜", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 9, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "茼蒿", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 7, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "茭白", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 9, "protein": 1.5, "fat": 0.2, "group": "蔬菜"}, {"name": "秋葵", "cat": "蔬菜", "portion": "生重200g", "kcal": 45, "gi": "低", "carb": 8, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "茴香", "cat": "蔬菜", "portion": "生重150g", "kcal": 45, "gi": "低", "carb": 6, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "苦菊", "cat": "蔬菜", "portion": "生重250g", "kcal": 45, "gi": "低", "carb": 7, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "小米椒", "cat": "蔬菜", "portion": "生重100g", "kcal": 45, "gi": "低", "carb": 8, "protein": 1, "fat": 0.2, "group": "蔬菜"}, {"name": "黄花菜", "cat": "蔬菜", "portion": "鲜重100g", "kcal": 45, "gi": "低", "carb": 8, "protein": 2, "fat": 0.2, "group": "蔬菜"}, {"name": "香菇", "cat": "蔬菜", "portion": "鲜重200g", "kcal": 45, "gi": "低", "carb": 7, "protein": 3, "fat": 0.2, "group": "蔬菜"}, {"name": "蘑菇", "cat": "蔬菜", "portion": "湿重150g", "kcal": 45, "gi": "低", "carb": 5, "protein": 3, "fat": 0.2, "group": "蔬菜"}, {"name": "西瓜", "cat": "水果", "portion": "鲜重300g", "kcal": 90, "gi": "高", "carb": 20, "protein": 0.6, "fat": 0.2, "group": "水果"}, {"name": "草莓", "cat": "水果", "portion": "鲜重300g", "kcal": 90, "gi": "低", "carb": 19, "protein": 1, "fat": 0.4, "group": "水果"}, {"name": "梨", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "低", "carb": 22, "protein": 0.5, "fat": 0.2, "group": "水果"}, {"name": "苹果", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "低", "carb": 21, "protein": 0.4, "fat": 0.3, "group": "水果"}, {"name": "桃子", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "低", "carb": 21, "protein": 0.8, "fat": 0.2, "group": "水果"}, {"name": "菠萝蜜", "cat": "水果", "portion": "鲜重100g", "kcal": 90, "gi": "高", "carb": 22, "protein": 1.2, "fat": 0.2, "group": "水果"}, {"name": "哈密瓜", "cat": "水果", "portion": "鲜重250g", "kcal": 90, "gi": "高", "carb": 21, "protein": 0.8, "fat": 0.2, "group": "水果"}, {"name": "石榴", "cat": "水果", "portion": "鲜重150g", "kcal": 90, "gi": "中", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "山竹", "cat": "水果", "portion": "鲜重150g", "kcal": 90, "gi": "中", "carb": 21, "protein": 0.5, "fat": 0.2, "group": "水果"}, {"name": "菠萝", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "中", "carb": 21, "protein": 0.8, "fat": 0.2, "group": "水果"}, {"name": "木瓜", "cat": "水果", "portion": "鲜重300g", "kcal": 90, "gi": "中", "carb": 21, "protein": 0.8, "fat": 0.2, "group": "水果"}, {"name": "杏", "cat": "水果", "portion": "鲜重250g", "kcal": 90, "gi": "中", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "荔枝", "cat": "水果", "portion": "鲜重150g", "kcal": 90, "gi": "中", "carb": 21, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "红枣干", "cat": "水果", "portion": "干重20g", "kcal": 90, "gi": "中", "carb": 11, "protein": 0.5, "fat": 0.1, "group": "水果"}, {"name": "甘蔗", "cat": "水果", "portion": "生重150g", "kcal": 90, "gi": "中", "carb": 22, "protein": 0.2, "fat": 0.1, "group": "水果"}, {"name": "蓝莓", "cat": "水果", "portion": "鲜重150g", "kcal": 90, "gi": "低", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "桂圆", "cat": "水果", "portion": "鲜重250g", "kcal": 90, "gi": "低", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "香蕉", "cat": "水果", "portion": "鲜重100g", "kcal": 90, "gi": "低", "carb": 21, "protein": 1.2, "fat": 0.3, "group": "水果"}, {"name": "火龙果", "cat": "水果", "portion": "鲜重150g", "kcal": 90, "gi": "低", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "芒果", "cat": "水果", "portion": "鲜重250g", "kcal": 90, "gi": "低", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "柿子", "cat": "水果", "portion": "鲜重100g", "kcal": 90, "gi": "低", "carb": 22, "protein": 0.5, "fat": 0.2, "group": "水果"}, {"name": "葡萄", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "低", "carb": 20, "protein": 0.5, "fat": 0.2, "group": "水果"}, {"name": "橙子", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "低", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "橘子", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "低", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "杨桃", "cat": "水果", "portion": "鲜重300g", "kcal": 90, "gi": "低", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "青枣", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "低", "carb": 19, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "榴莲肉", "cat": "水果", "portion": "鲜重50g", "kcal": 90, "gi": "低", "carb": 17, "protein": 1, "fat": 4, "group": "水果"}, {"name": "牛油果", "cat": "水果", "portion": "鲜重50g", "kcal": 90, "gi": "低", "carb": 4, "protein": 1, "fat": 8, "group": "水果"}, {"name": "人参果", "cat": "水果", "portion": "鲜重100g", "kcal": 90, "gi": "低", "carb": 20, "protein": 0.5, "fat": 0.2, "group": "水果"}, {"name": "椰肉", "cat": "水果", "portion": "鲜重25g", "kcal": 90, "gi": "低", "carb": 4, "protein": 0.5, "fat": 7, "group": "水果"}, {"name": "奇异果", "cat": "水果", "portion": "鲜重150g", "kcal": 90, "gi": "低", "carb": 19, "protein": 1.2, "fat": 0.4, "group": "水果"}, {"name": "柠檬", "cat": "水果", "portion": "鲜重250g", "kcal": 90, "gi": "低", "carb": 14, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "柚子", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "低", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "李子", "cat": "水果", "portion": "鲜重250g", "kcal": 90, "gi": "低", "carb": 20, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "樱桃", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "低", "carb": 19, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "百香果", "cat": "水果", "portion": "鲜重100g", "kcal": 90, "gi": "低", "carb": 19, "protein": 1.5, "fat": 0.2, "group": "水果"}, {"name": "圣女果", "cat": "水果", "portion": "鲜重350g", "kcal": 90, "gi": "低", "carb": 18, "protein": 1.5, "fat": 0.2, "group": "水果"}, {"name": "树莓", "cat": "水果", "portion": "鲜重200g", "kcal": 90, "gi": "低", "carb": 18, "protein": 1, "fat": 0.2, "group": "水果"}, {"name": "黑橄榄", "cat": "水果", "portion": "鲜重100g", "kcal": 90, "gi": "低", "carb": 4, "protein": 1, "fat": 7, "group": "水果"}, {"name": "猪肉(瘦肉)", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 13, "fat": 4, "group": "蛋白"}, {"name": "带鱼", "cat": "蛋白", "portion": "生重75g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 12, "fat": 4, "group": "蛋白"}, {"name": "鸡肉", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 10, "fat": 4, "group": "蛋白"}, {"name": "鸡蛋", "cat": "蛋白", "portion": "生重65g", "kcal": 90, "gi": "友好", "carb": 0.6, "protein": 8, "fat": 6, "group": "蛋白"}, {"name": "牛腩", "cat": "蛋白", "portion": "生重25g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 5, "fat": 6, "group": "蛋白"}, {"name": "海参", "cat": "蛋白", "portion": "生重100g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 19, "fat": 0.5, "group": "蛋白"}, {"name": "瑶柱", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 19, "fat": 1, "group": "蛋白"}, {"name": "鸡胸肉", "cat": "蛋白", "portion": "生重75g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 19, "fat": 2, "group": "蛋白"}, {"name": "鲅鱼", "cat": "蛋白", "portion": "生重100g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 19, "fat": 2, "group": "蛋白"}, {"name": "巴沙鱼", "cat": "蛋白", "portion": "生重100g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 18, "fat": 2, "group": "蛋白"}, {"name": "兔肉", "cat": "蛋白", "portion": "生重100g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 17, "fat": 2, "group": "蛋白"}, {"name": "牛蛙", "cat": "蛋白", "portion": "生重100g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 17, "fat": 2, "group": "蛋白"}, {"name": "生蚝", "cat": "蛋白", "portion": "生重150g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 17, "fat": 2, "group": "蛋白"}, {"name": "黑毛肚", "cat": "蛋白", "portion": "生重150g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 17, "fat": 2, "group": "蛋白"}, {"name": "河虾", "cat": "蛋白", "portion": "生重100g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 17, "fat": 2, "group": "蛋白"}, {"name": "扇贝", "cat": "蛋白", "portion": "生重150g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 17, "fat": 1.5, "group": "蛋白"}, {"name": "黄鱼", "cat": "蛋白", "portion": "生重100g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 16, "fat": 2.5, "group": "蛋白"}, {"name": "田螺肉", "cat": "蛋白", "portion": "生重150g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 16, "fat": 1.5, "group": "蛋白"}, {"name": "螃蟹", "cat": "蛋白", "portion": "生重75g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 15, "fat": 2, "group": "蛋白"}, {"name": "鲍鱼", "cat": "蛋白", "portion": "生重150g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 14, "fat": 1.5, "group": "蛋白"}, {"name": "猪肝", "cat": "蛋白", "portion": "生重75g", "kcal": 90, "gi": "友好", "carb": 2, "protein": 14, "fat": 3, "group": "蛋白"}, {"name": "黄牛肉", "cat": "蛋白", "portion": "生重75g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 14, "fat": 3, "group": "蛋白"}, {"name": "鹅肉", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 13, "fat": 4, "group": "蛋白"}, {"name": "草鱼", "cat": "蛋白", "portion": "生重75g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 13, "fat": 3, "group": "蛋白"}, {"name": "猪心", "cat": "蛋白", "portion": "生重75g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 13, "fat": 3, "group": "蛋白"}, {"name": "银鲳鱼", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 12, "fat": 3, "group": "蛋白"}, {"name": "鸭血", "cat": "蛋白", "portion": "生重100g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 11, "fat": 2, "group": "蛋白"}, {"name": "乌鸡", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 10, "fat": 4, "group": "蛋白"}, {"name": "鸡爪", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 9, "fat": 5, "group": "蛋白"}, {"name": "羊肉(肥瘦)", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 8, "fat": 6, "group": "蛋白"}, {"name": "猪蹄", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 8, "fat": 6, "group": "蛋白"}, {"name": "松花蛋", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0.5, "protein": 7, "fat": 5, "group": "蛋白"}, {"name": "鹌鹑蛋", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0.5, "protein": 7, "fat": 5, "group": "蛋白"}, {"name": "猪皮", "cat": "蛋白", "portion": "生重25g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 7, "fat": 6, "group": "蛋白"}, {"name": "鸭蛋", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0.5, "protein": 6, "fat": 6, "group": "蛋白"}, {"name": "牛杂煲", "cat": "蛋白", "portion": "生重100g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 6, "fat": 5, "group": "蛋白"}, {"name": "火腿肠", "cat": "蛋白", "portion": "生重25g", "kcal": 90, "gi": "友好", "carb": 2, "protein": 4, "fat": 7, "group": "蛋白"}, {"name": "培根", "cat": "蛋白", "portion": "生重25g", "kcal": 90, "gi": "友好", "carb": 1, "protein": 3, "fat": 8, "group": "蛋白"}, {"name": "猪大肠", "cat": "蛋白", "portion": "生重50g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 3, "fat": 8, "group": "蛋白"}, {"name": "鸭肉", "cat": "蛋白", "portion": "生重25g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 3, "fat": 8, "group": "蛋白"}, {"name": "猪肉(五花)", "cat": "蛋白", "portion": "生重25g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 2, "fat": 9, "group": "蛋白"}, {"name": "猪肉(肥肉)", "cat": "蛋白", "portion": "生重15g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "蛋白"}, {"name": "脱脂奶粉", "cat": "乳类", "portion": "干重25g", "kcal": 90, "gi": "低", "carb": 10, "protein": 9, "fat": 0.5, "group": "乳类"}, {"name": "脱脂牛奶", "cat": "乳类", "portion": "250ml", "kcal": 90, "gi": "低", "carb": 12, "protein": 9, "fat": 0.5, "group": "乳类"}, {"name": "奶酪", "cat": "乳类", "portion": "净重25g", "kcal": 90, "gi": "低", "carb": 1, "protein": 7, "fat": 6, "group": "乳类"}, {"name": "全脂牛奶", "cat": "乳类", "portion": "150ml", "kcal": 90, "gi": "低", "carb": 8, "protein": 5, "fat": 5, "group": "乳类"}, {"name": "酸奶", "cat": "乳类", "portion": "150ml", "kcal": 90, "gi": "低", "carb": 10, "protein": 4, "fat": 3, "group": "乳类"}, {"name": "双皮奶", "cat": "乳类", "portion": "净重100g", "kcal": 90, "gi": "低", "carb": 10, "protein": 4, "fat": 4, "group": "乳类"}, {"name": "全脂奶粉", "cat": "乳类", "portion": "干重20g", "kcal": 90, "gi": "低", "carb": 8, "protein": 4, "fat": 4, "group": "乳类"}, {"name": "奶酪棒", "cat": "乳类", "portion": "净重50g", "kcal": 90, "gi": "低", "carb": 2, "protein": 2, "fat": 7, "group": "乳类"}, {"name": "羊乳", "cat": "乳类", "portion": "150ml", "kcal": 90, "gi": "低", "carb": 8, "protein": 2, "fat": 6, "group": "乳类"}, {"name": "炸鲜奶", "cat": "乳类", "portion": "净重25g", "kcal": 90, "gi": "低", "carb": 8, "protein": 1, "fat": 6, "group": "乳类"}, {"name": "水面筋", "cat": "豆类", "portion": "净重25g", "kcal": 45, "gi": "友好", "carb": 2, "protein": 7, "fat": 0.5, "group": "豆类"}, {"name": "豆腐皮", "cat": "豆类", "portion": "湿重25g", "kcal": 45, "gi": "友好", "carb": 1, "protein": 5, "fat": 2, "group": "豆类"}, {"name": "腐竹", "cat": "豆类", "portion": "湿重25g", "kcal": 45, "gi": "友好", "carb": 1, "protein": 5, "fat": 2, "group": "豆类"}, {"name": "内酯豆腐", "cat": "豆类", "portion": "净重100g", "kcal": 45, "gi": "低", "carb": 2, "protein": 5, "fat": 2, "group": "豆类"}, {"name": "豆浆", "cat": "豆类", "portion": "150ml", "kcal": 45, "gi": "低", "carb": 3, "protein": 4, "fat": 2, "group": "豆类"}, {"name": "臭豆腐", "cat": "豆类", "portion": "净重25g", "kcal": 45, "gi": "友好", "carb": 1, "protein": 4, "fat": 2, "group": "豆类"}, {"name": "日本豆腐", "cat": "豆类", "portion": "净重50g", "kcal": 45, "gi": "友好", "carb": 1, "protein": 4, "fat": 2, "group": "豆类"}, {"name": "素鸡", "cat": "豆类", "portion": "净重25g", "kcal": 45, "gi": "低", "carb": 1, "protein": 4, "fat": 2, "group": "豆类"}, {"name": "红腐乳", "cat": "豆类", "portion": "净重25g", "kcal": 45, "gi": "友好", "carb": 1, "protein": 4, "fat": 2, "group": "豆类"}, {"name": "豆腐", "cat": "豆类", "portion": "净重50g", "kcal": 45, "gi": "友好", "carb": 1.5, "protein": 3, "fat": 2, "group": "豆类"}, {"name": "豆腐干", "cat": "豆类", "portion": "净重25g", "kcal": 45, "gi": "友好", "carb": 1.5, "protein": 3, "fat": 2, "group": "豆类"}, {"name": "毛豆腐", "cat": "豆类", "portion": "净重50g", "kcal": 45, "gi": "友好", "carb": 1.5, "protein": 3, "fat": 2, "group": "豆类"}, {"name": "千叶豆腐", "cat": "豆类", "portion": "净重25g", "kcal": 45, "gi": "友好", "carb": 1.5, "protein": 3, "fat": 2, "group": "豆类"}, {"name": "湿豆豉", "cat": "豆类", "portion": "净重15g", "kcal": 45, "gi": "友好", "carb": 1, "protein": 3, "fat": 2, "group": "豆类"}, {"name": "炸臭豆腐", "cat": "豆类", "portion": "净重25g", "kcal": 45, "gi": "友好", "carb": 1, "protein": 3, "fat": 3, "group": "豆类"}, {"name": "豆腐脑", "cat": "豆类", "portion": "含汤100g", "kcal": 45, "gi": "低", "carb": 2, "protein": 2, "fat": 1, "group": "豆类"}, {"name": "炸豆腐", "cat": "豆类", "portion": "净重25g", "kcal": 45, "gi": "友好", "carb": 1, "protein": 2, "fat": 3, "group": "豆类"}, {"name": "豆油", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "菜籽油", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "麻油", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "花生油", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "玉米油", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "香油", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "色拉油", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "猪油", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "橄榄油", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "奶油", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "沙拉酱", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "友好", "carb": 1, "protein": 0, "fat": 10, "group": "油脂"}, {"name": "猪油渣", "cat": "油脂", "portion": "净重10g", "kcal": 90, "gi": "友好", "carb": 0, "protein": 1, "fat": 9, "group": "油脂"}, {"name": "淡奶油", "cat": "油脂", "portion": "净重25g", "kcal": 90, "gi": "友好", "carb": 1, "protein": 1, "fat": 9, "group": "油脂"}, {"name": "千岛酱", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "友好", "carb": 2, "protein": 0, "fat": 8, "group": "油脂"}, {"name": "核桃仁", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "低", "carb": 2, "protein": 2, "fat": 8, "group": "油脂"}, {"name": "花生酱", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "友好", "carb": 2, "protein": 3, "fat": 8, "group": "油脂"}, {"name": "葵花子", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "低", "carb": 2, "protein": 3, "fat": 8, "group": "油脂"}, {"name": "芝麻酱", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "友好", "carb": 2, "protein": 3, "fat": 7, "group": "油脂"}, {"name": "西瓜子", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "低", "carb": 2, "protein": 3, "fat": 7, "group": "油脂"}, {"name": "二八酱", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "友好", "carb": 2, "protein": 3, "fat": 7, "group": "油脂"}, {"name": "南瓜子", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "低", "carb": 2, "protein": 3, "fat": 7, "group": "油脂"}, {"name": "杏仁", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "低", "carb": 2, "protein": 3, "fat": 7, "group": "油脂"}, {"name": "花生米", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "低", "carb": 2, "protein": 3, "fat": 7, "group": "油脂"}, {"name": "松子", "cat": "油脂", "portion": "净重15g", "kcal": 90, "gi": "低", "carb": 2, "protein": 2, "fat": 6, "group": "油脂"}];
+const REGION_TEMPLATES = {"东北地区": {"早餐": [{"name": "锅贴+煮鸡蛋+无糖豆浆+萝卜", "ingredients": [{"name": "锅贴", "display": "锅贴（玉米面20g，面粉40g）", "grams": 60, "kcal": 180, "protein": 5}, {"name": "鸡蛋", "display": "煮鸡蛋", "grams": 50, "kcal": 90, "protein": 8}, {"name": "无糖豆浆", "display": "无糖豆浆", "grams": 300, "kcal": 90, "protein": 8}, {"name": "白萝卜", "display": "萝卜蘸酱（按少酱）", "grams": 50, "kcal": 15, "protein": 0.5}]}], "午餐": [{"name": "杂粮饭+芹菜炒肉+鸡片油菜+红菜汤", "ingredients": [{"name": "杂粮饭", "display": "杂粮饭（大米50g，藜麦10g，玉米碴10g）", "grams": 70, "kcal": 250, "protein": 7}, {"name": "芹菜炒肉", "display": "芹菜炒肉（芹菜50g，猪瘦肉20g）", "grams": 70, "kcal": 90, "protein": 6}, {"name": "鸡片炒油菜", "display": "鸡片炒油菜（鸡胸肉20g，油菜50g）", "grams": 70, "kcal": 80, "protein": 7}, {"name": "红菜汤", "display": "红菜汤（圆白菜50g，西红柿50g，土豆20g，牛肉30g）", "grams": 150, "kcal": 85, "protein": 6}]}], "晚餐": [{"name": "二米饭+藿香鱼+杏鲍菇蒜苗炒肉+油豆角炖肉", "ingredients": [{"name": "二米饭", "display": "二米饭（大米50g，小米50g）", "grams": 100, "kcal": 330, "protein": 8}, {"name": "藿香鱼", "display": "藿香鱼（白鲢30g）", "grams": 30, "kcal": 35, "protein": 6}, {"name": "杏鲍菇蒜苗炒肉", "display": "杏鲍菇蒜苗炒肉（杏鲍菇15g，蒜苗50g，牛肉20g）", "grams": 85, "kcal": 80, "protein": 6}, {"name": "油豆角炖肉", "display": "油豆角炖肉（油豆角50g，牛肉20g）", "grams": 70, "kcal": 80, "protein": 5}]}]}, "西北地区": {"早餐": [{"name": "荞面馍馍+鸡蛋+牛奶+凉拌黄瓜", "ingredients": [{"name": "荞面馍馍", "display": "荞面馍馍", "grams": 80, "kcal": 180, "protein": 6}, {"name": "鸡蛋", "display": "煮鸡蛋", "grams": 50, "kcal": 90, "protein": 8}, {"name": "纯牛奶", "display": "纯牛奶", "grams": 250, "kcal": 135, "protein": 7}, {"name": "黄瓜", "display": "凉拌黄瓜", "grams": 100, "kcal": 15, "protein": 1}]}], "午餐": [{"name": "杂粮饭+洋葱牛肉+清炒菜花+紫菜汤", "ingredients": [{"name": "杂粮饭", "display": "杂粮饭（大米60g，燕麦20g）", "grams": 80, "kcal": 280, "protein": 8}, {"name": "洋葱牛肉", "display": "洋葱炒牛肉（洋葱50g，牛肉60g）", "grams": 110, "kcal": 150, "protein": 12}, {"name": "菜花", "display": "清炒菜花", "grams": 120, "kcal": 50, "protein": 2}, {"name": "紫菜汤", "display": "紫菜汤", "grams": 200, "kcal": 25, "protein": 2}]}], "晚餐": [{"name": "二米饭+山药炖鸡+蒜蓉生菜", "ingredients": [{"name": "二米饭", "display": "二米饭（大米55g，小米25g）", "grams": 80, "kcal": 260, "protein": 6}, {"name": "山药炖鸡", "display": "山药炖鸡（鸡肉60g，山药60g）", "grams": 120, "kcal": 150, "protein": 14}, {"name": "蒜蓉生菜", "display": "蒜蓉生菜", "grams": 150, "kcal": 45, "protein": 2}]}]}, "华北地区": {"早餐": [{"name": "全麦馒头+鸡蛋+牛奶+番茄", "ingredients": [{"name": "全麦馒头", "display": "全麦馒头", "grams": 80, "kcal": 180, "protein": 6}, {"name": "鸡蛋", "display": "煮鸡蛋", "grams": 50, "kcal": 90, "protein": 8}, {"name": "纯牛奶", "display": "纯牛奶", "grams": 250, "kcal": 135, "protein": 7}, {"name": "番茄", "display": "番茄", "grams": 150, "kcal": 30, "protein": 1.5}]}], "午餐": [{"name": "米饭+西红柿牛肉+白灼菜心", "ingredients": [{"name": "米饭", "display": "米饭（大米100g）", "grams": 100, "kcal": 350, "protein": 7}, {"name": "西红柿牛肉", "display": "西红柿炖牛肉（牛肉60g，西红柿100g）", "grams": 160, "kcal": 170, "protein": 13}, {"name": "白灼菜心", "display": "白灼菜心（菜心125g，香菇25g）", "grams": 150, "kcal": 60, "protein": 4}]}], "晚餐": [{"name": "杂粮饭+青椒焖肚条+素炒三丝", "ingredients": [{"name": "杂粮饭", "display": "杂粮饭（大米70g，燕麦30g）", "grams": 100, "kcal": 320, "protein": 9}, {"name": "青椒焖肚条", "display": "青椒焖肚条（青椒25g，猪肚120g）", "grams": 145, "kcal": 150, "protein": 16}, {"name": "素炒三丝", "display": "素炒三丝（莴笋50g，胡萝卜25g，洋葱25g）", "grams": 100, "kcal": 45, "protein": 2}]}]}, "华东地区": {"早餐": [{"name": "杂粮粥+鸡蛋+牛奶+黄瓜", "ingredients": [{"name": "杂粮粥", "display": "杂粮粥", "grams": 300, "kcal": 160, "protein": 4}, {"name": "鸡蛋", "display": "鸡蛋", "grams": 50, "kcal": 90, "protein": 8}, {"name": "纯牛奶", "display": "纯牛奶", "grams": 250, "kcal": 135, "protein": 7}, {"name": "黄瓜", "display": "黄瓜小菜", "grams": 100, "kcal": 15, "protein": 1}]}], "午餐": [{"name": "米饭+清蒸鲈鱼+清炒青菜+豆腐汤", "ingredients": [{"name": "米饭", "display": "米饭（大米100g）", "grams": 100, "kcal": 350, "protein": 7}, {"name": "清蒸鲈鱼", "display": "清蒸鲈鱼（鲈鱼100g）", "grams": 100, "kcal": 110, "protein": 18}, {"name": "清炒青菜", "display": "清炒青菜", "grams": 150, "kcal": 60, "protein": 3}, {"name": "豆腐汤", "display": "青菜豆腐汤（豆腐80g）", "grams": 200, "kcal": 60, "protein": 5}]}], "晚餐": [{"name": "杂粮饭+虾仁西兰花+炒圆白菜", "ingredients": [{"name": "杂粮饭", "display": "杂粮饭（大米60g，红米20g）", "grams": 80, "kcal": 260, "protein": 6}, {"name": "虾仁西兰花", "display": "虾仁西兰花（虾仁60g，西兰花100g）", "grams": 160, "kcal": 130, "protein": 13}, {"name": "清炒圆白菜", "display": "清炒圆白菜", "grams": 120, "kcal": 50, "protein": 2}]}]}, "华中地区": {"早餐": [{"name": "燕麦馒头+鸡蛋+豆浆+凉拌菠菜", "ingredients": [{"name": "燕麦馒头", "display": "燕麦馒头", "grams": 80, "kcal": 180, "protein": 6}, {"name": "鸡蛋", "display": "鸡蛋", "grams": 50, "kcal": 90, "protein": 8}, {"name": "无糖豆浆", "display": "无糖豆浆", "grams": 250, "kcal": 75, "protein": 7}, {"name": "菠菜", "display": "凉拌菠菜", "grams": 100, "kcal": 25, "protein": 2}]}], "午餐": [{"name": "米饭+莲藕炒瘦肉+清炒油菜+豆腐汤", "ingredients": [{"name": "米饭", "display": "米饭（大米100g）", "grams": 100, "kcal": 350, "protein": 7}, {"name": "莲藕炒瘦肉", "display": "莲藕炒瘦肉（莲藕80g，猪瘦肉50g）", "grams": 130, "kcal": 150, "protein": 10}, {"name": "清炒油菜", "display": "清炒油菜", "grams": 150, "kcal": 60, "protein": 3}, {"name": "豆腐汤", "display": "豆腐青菜汤（豆腐60g）", "grams": 200, "kcal": 50, "protein": 4}]}], "晚餐": [{"name": "二米饭+清蒸鱼+木耳黄瓜", "ingredients": [{"name": "二米饭", "display": "二米饭（大米55g，小米25g）", "grams": 80, "kcal": 260, "protein": 6}, {"name": "清蒸鱼", "display": "清蒸鱼（鱼100g）", "grams": 100, "kcal": 110, "protein": 18}, {"name": "木耳黄瓜", "display": "黄瓜拌木耳（黄瓜100g，木耳50g）", "grams": 150, "kcal": 45, "protein": 2}]}]}, "西南地区": {"早餐": [{"name": "鲜虾苕粉+牛奶+鸡蛋", "ingredients": [{"name": "鲜虾苕粉", "display": "鲜虾苕粉（苕粉100g，海虾50g）", "grams": 150, "kcal": 240, "protein": 12}, {"name": "纯牛奶", "display": "纯牛奶", "grams": 250, "kcal": 135, "protein": 7}, {"name": "鸡蛋", "display": "煮鸡蛋", "grams": 50, "kcal": 90, "protein": 8}]}], "午餐": [{"name": "糙米饭+冬笋炒牛肉+炒奶白菜+豆腐汤", "ingredients": [{"name": "糙米饭", "display": "糙米饭（糙米100g）", "grams": 100, "kcal": 340, "protein": 8}, {"name": "冬笋炒牛肉", "display": "冬笋炒牛肉（冬笋60g，牛肉100g）", "grams": 160, "kcal": 200, "protein": 18}, {"name": "炒奶白菜", "display": "炒奶白菜", "grams": 100, "kcal": 40, "protein": 2}, {"name": "西洋菜豆腐汤", "display": "西洋菜豆腐汤（豆腐60g）", "grams": 200, "kcal": 50, "protein": 4}]}], "晚餐": [{"name": "煲仔饭+西兰花炒肉片", "ingredients": [{"name": "煲仔饭", "display": "煲仔饭（大米60g，羊肉45g，菜心100g）", "grams": 205, "kcal": 290, "protein": 14}, {"name": "西兰花炒肉片", "display": "西兰花炒肉片（西兰花100g，猪瘦肉50g）", "grams": 150, "kcal": 130, "protein": 10}]}]}, "华南地区": {"早餐": [{"name": "韭菜鸡蛋炒面+牛奶+松子", "ingredients": [{"name": "韭菜鸡蛋炒面", "display": "韭菜鸡蛋炒面（韭菜50g，鸡蛋55g，面条50g）", "grams": 155, "kcal": 250, "protein": 11}, {"name": "纯牛奶", "display": "纯牛奶", "grams": 250, "kcal": 135, "protein": 7}, {"name": "松子", "display": "松子", "grams": 10, "kcal": 60, "protein": 1.5}]}], "午餐": [{"name": "米饭+彩椒胡萝卜瘦肉+盐水菜心+海带豆腐汤", "ingredients": [{"name": "米饭", "display": "米饭（大米100g）", "grams": 100, "kcal": 350, "protein": 7}, {"name": "彩椒胡萝卜粒炒瘦肉", "display": "彩椒胡萝卜粒炒瘦肉（柿子椒40g，胡萝卜80g，猪瘦肉30g）", "grams": 150, "kcal": 110, "protein": 7}, {"name": "盐水菜心", "display": "盐水菜心（菜心100g）", "grams": 100, "kcal": 30, "protein": 2}, {"name": "海带豆腐汤", "display": "海带豆腐汤（海带60g，豆腐80g）", "grams": 140, "kcal": 70, "protein": 5}]}], "晚餐": [{"name": "杂粮饭+春笋炒鸡+清炒圆白菜", "ingredients": [{"name": "杂粮饭", "display": "杂粮饭（大米50g，红米25g）", "grams": 75, "kcal": 250, "protein": 6}, {"name": "春笋炒鸡", "display": "春笋炒鸡（鸡肉30g，春笋50g）", "grams": 80, "kcal": 90, "protein": 8}, {"name": "清炒圆白菜", "display": "清炒圆白菜（圆白菜100g）", "grams": 100, "kcal": 40, "protein": 2}]}]}, "清淡通用": {"早餐": [{"name": "燕麦牛奶鸡蛋早餐", "ingredients": [{"name": "燕麦片", "display": "燕麦片", "grams": 40, "kcal": 150, "protein": 5}, {"name": "脱脂牛奶", "display": "脱脂牛奶", "grams": 250, "kcal": 90, "protein": 9}, {"name": "鸡蛋", "display": "鸡蛋", "grams": 50, "kcal": 90, "protein": 8}, {"name": "黄瓜", "display": "黄瓜", "grams": 100, "kcal": 15, "protein": 1}]}], "午餐": [{"name": "杂粮饭+清蒸鱼+青菜豆腐", "ingredients": [{"name": "杂粮饭", "display": "杂粮饭", "grams": 100, "kcal": 300, "protein": 8}, {"name": "清蒸鱼", "display": "清蒸鱼", "grams": 100, "kcal": 110, "protein": 18}, {"name": "青菜豆腐", "display": "青菜豆腐", "grams": 180, "kcal": 90, "protein": 6}]}], "晚餐": [{"name": "二米饭+鸡胸肉时蔬", "ingredients": [{"name": "二米饭", "display": "二米饭", "grams": 80, "kcal": 260, "protein": 6}, {"name": "鸡胸肉", "display": "鸡胸肉", "grams": 80, "kcal": 100, "protein": 20}, {"name": "时蔬拼盘", "display": "时蔬拼盘", "grams": 200, "kcal": 60, "protein": 3}]}]}};
+let state = JSON.parse(localStorage.getItem('diet_v6_region_guideline') || '{}');
+state.profile = state.profile || null;
+state.plan = state.plan || null;
+
+function saveState(){ localStorage.setItem('diet_v6_region_guideline', JSON.stringify(state)); }
+function foodName(f){ return f.name; }
+function foodCategory(f){ return f.cat || f.category; }
+function foodGroup(f){ return f.group || f.pool; }
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(id);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.target === id));
+  if (id === 'plan') renderPlan();
+  if (id === 'home') renderHome();
+  if (id === 'food') showFoodTab('exchange');
+}
+function calcBMI(weight, heightCm){ const h = heightCm/100; return +(weight/(h*h)).toFixed(1); }
+function bodyType(bmi){ if (bmi < 18.5) return '消瘦'; if (bmi < 24) return '正常'; return '肥胖/超重'; }
+function standardWeight(heightCm){ return Math.max(30, +(heightCm - 105).toFixed(1)); }
+function dosingWeight(heightCm, weightKg, edema='无'){
+  const bmi = calcBMI(weightKg, heightCm);
+  if (edema === '有') return standardWeight(heightCm);
+  return bmi >= 24 ? standardWeight(heightCm) : weightKg;
+}
+function proteinRule(profile){
+  const useWeight = dosingWeight(profile.height, profile.weight, profile.edema || '无');
+  const isCKD = profile.ckdStage !== '无';
+  let proteinPerKgValue = 0.9;
+  let ruleText = '普通糖尿病默认 0.9 g/kg·d';
+  let weightBasisText = ((profile.edema === '有') || calcBMI(profile.weight, profile.height) >= 24) ? '标准体重' : '实际体重';
+
+  if (isCKD){
+    const map = {
+      'CKD 1–2期': [0.8, 'CKD 1–2期按 0.8 g/kg·d'],
+      'CKD 3–5期（未透析）': [0.6, 'CKD 3–5期（未透析）按 0.6 g/kg·d'],
+      '血液透析': [1.1, '血液透析按 1.0–1.2 g/kg·d，系统默认取 1.1 g/kg·d'],
+      '腹膜透析': [1.25, '腹膜透析按 1.2–1.3 g/kg·d，系统默认取 1.25 g/kg·d'],
+      '肾移植稳定期': [0.8, '肾移植稳定期按 0.8 g/kg·d']
+    };
+    const picked = map[profile.ckdStage];
+    proteinPerKgValue = picked[0];
+    ruleText = picked[1] + '；CKD 优先级高于糖尿病足/低蛋白血症';
+  } else if (profile.hypoProtein === '有' || profile.mode === '糖尿病足'){
+    proteinPerKgValue = 1.1;
+    ruleText = '糖尿病足/低蛋白血症且无 CKD 严格限制，按 1.0–1.2 g/kg·d，系统默认取 1.1 g/kg·d';
+  } else {
+    proteinPerKgValue = 0.9;
+    ruleText = '普通糖尿病按 0.8–1.0 g/kg·d，系统默认取 0.9 g/kg·d';
+  }
+
+  if (!isCKD && ['心功能III级','心功能IV级'].includes(profile.hfStage)){
+    proteinPerKgValue = Math.min(proteinPerKgValue, 1.0);
+    ruleText += '；合并心功能III–IV级，蛋白上限不超过 1.0 g/kg·d';
+  }
+
+  return {
+    useWeight: +useWeight.toFixed(1),
+    proteinPerKgValue,
+    proteinTarget: Math.round(useWeight * proteinPerKgValue),
+    ruleText,
+    weightBasisText
+  };
+}
+function kcalPerKg(type, activity){
+  const map = {
+    '消瘦': {'卧床':25,'轻体力劳动':35,'中等体力劳动':40,'重体力劳动':50},
+    '正常': {'卧床':20,'轻体力劳动':30,'中等体力劳动':35,'重体力劳动':40},
+    '肥胖/超重': {'卧床':15,'轻体力劳动':25,'中等体力劳动':30,'重体力劳动':35}
+  };
+  return map[type][activity];
+}
+function roundTo45(x){ return Math.max(45, Math.round(x/45)*45); }
+function ckdProteinPerKg(stage){
+  return {'无':null,'CKD 1–2期':0.8,'CKD 3–5期（未透析）':0.6,'血液透析':1.1,'腹膜透析':1.25,'肾移植稳定期':0.8}[stage];
+}
+function mealRatio(profile){ return profile.mode === '糖尿病足' ? [0.2,0.4,0.4] : [0.3,0.4,0.3]; }
+function mealTargets(totalKcal, profile){
+  const ratio = mealRatio(profile);
+  const totalUnits = Math.round(totalKcal / 45);
+  const raw = ratio.map(r => r * totalUnits);
+  const base = raw.map(x => Math.floor(x));
+  let remain = totalUnits - base.reduce((a,b)=>a+b,0);
+  const order = raw.map((x,i)=>({i, frac:x-base[i]})).sort((a,b)=>b.frac-a.frac);
+  for (let k=0; k<remain; k++) base[order[k].i] += 1;
+  return base.map(x => x*45);
+}
+
+function parsePortionBase(portion){
+  const m = String(portion || '').match(/(\d+(?:\.\d+)?)/);
+  return m ? parseFloat(m[1]) : 100;
+}
+function getFoodByName(name){
+  return FOODS.find(f => f.name === name) || null;
+}
+const DISH_COMPONENT_MAP = {
+  '全麦馒头': [{'db':'全麦面包','grams':50}],
+  '燕麦馒头': [{'db':'全麦面包','grams':50}],
+  '馒头': [{'db':'馒头','grams':50}],
+  '纯牛奶': [{'db':'脱脂牛奶','grams':250}],
+  '全脂牛奶': [{'db':'全脂牛奶','grams':250}],
+  '无糖豆浆': [{'db':'豆浆','grams':250}],
+  '煮鸡蛋': [{'db':'鸡蛋','grams':50}],
+  '鸡蛋': [{'db':'鸡蛋','grams':50}],
+  '番茄': [{'db':'番茄','grams':150}],
+  '黄瓜': [{'db':'黄瓜','grams':100}],
+  '杂粮粥': [{'db':'燕麦片','grams':25},{'db':'米饭','grams':60}],
+  '杂粮饭': [{'db':'米饭','grams':70},{'db':'燕麦片','grams':25}],
+  '二米饭': [{'db':'米饭','grams':80}],
+  '糙米饭': [{'db':'米饭','grams':100}],
+  '锅贴': [{'db':'面包','grams':60}],
+  '荞面馍馍': [{'db':'荞麦面','grams':40}],
+  '藿香鱼': [{'db':'草鱼','grams':30}],
+  '清蒸鱼': [{'db':'巴沙鱼','grams':100}],
+  '清蒸鲈鱼': [{'db':'巴沙鱼','grams':100}],
+  '鸡片炒油菜': [{'db':'鸡胸肉','grams':20},{'db':'油菜','grams':50}],
+  '芹菜炒肉': [{'db':'芹菜','grams':50},{'db':'猪肉(瘦肉)','grams':20}],
+  '洋葱牛肉': [{'db':'洋葱','grams':50},{'db':'黄牛肉','grams':60}],
+  '杏鲍菇蒜苗炒肉': [{'db':'香菇','grams':15},{'db':'芹菜','grams':50},{'db':'黄牛肉','grams':20}],
+  '油豆角炖肉': [{'db':'油菜','grams':50},{'db':'黄牛肉','grams':20}],
+  '山药炖鸡': [{'db':'鸡胸肉','grams':60},{'db':'山药','grams':60}],
+  '西红柿牛肉': [{'db':'黄牛肉','grams':60},{'db':'番茄','grams':100}],
+  '白灼菜心': [{'db':'油菜','grams':125},{'db':'香菇','grams':25}],
+  '青椒焖肚条': [{'db':'青椒','grams':25},{'db':'猪肉(瘦肉)','grams':120}],
+  '素炒三丝': [{'db':'莴笋','grams':50},{'db':'胡萝卜','grams':25},{'db':'洋葱','grams':25}],
+  '豆腐汤': [{'db':'豆腐','grams':70},{'db':'油菜','grams':30}],
+  '清炒青菜': [{'db':'油菜','grams':150}],
+  '虾仁西兰花': [{'db':'河虾','grams':60},{'db':'西兰花','grams':100}],
+  '清炒圆白菜': [{'db':'圆白菜','grams':120}],
+  '莲藕炒瘦肉': [{'db':'莲藕','grams':80},{'db':'猪肉(瘦肉)','grams':50}],
+  '清炒油菜': [{'db':'油菜','grams':150}],
+  '木耳黄瓜': [{'db':'黄瓜','grams':100},{'db':'木耳','grams':50}],
+  '鲜虾苕粉': [{'db':'粉丝','grams':50},{'db':'河虾','grams':50}],
+  '冬笋炒牛肉': [{'db':'笋丝','grams':60},{'db':'黄牛肉','grams':100}],
+  '炒奶白菜': [{'db':'油菜','grams':100}],
+  '西洋菜豆腐汤': [{'db':'油菜','grams':140},{'db':'豆腐','grams':60}],
+  '煲仔饭': [{'db':'米饭','grams':60},{'db':'羊肉','grams':45},{'db':'油菜','grams':100}],
+  '西兰花炒肉片': [{'db':'西兰花','grams':100},{'db':'猪肉(瘦肉)','grams':50}],
+  '韭菜鸡蛋炒面': [{'db':'荞麦面','grams':50},{'db':'鸡蛋','grams':55},{'db':'韭菜','grams':50}],
+  '彩椒胡萝卜粒炒瘦肉': [{'db':'柿子椒','grams':40},{'db':'胡萝卜','grams':80},{'db':'猪肉(瘦肉)','grams':30}],
+  '盐水菜心': [{'db':'油菜','grams':100}],
+  '海带豆腐汤': [{'db':'海带','grams':60},{'db':'豆腐','grams':80}],
+  '春笋炒鸡': [{'db':'笋丝','grams':50},{'db':'鸡胸肉','grams':30}],
+  '青菜豆腐': [{'db':'油菜','grams':100},{'db':'豆腐','grams':80}],
+  '蒜蓉生菜': [{'db':'生菜','grams':150}],
+  '菜花': [{'db':'白菜花','grams':120}],
+  '紫菜汤': [{'db':'海带','grams':20}],
+  '红菜汤': [{'db':'圆白菜','grams':50},{'db':'番茄','grams':50},{'db':'土豆','grams':20},{'db':'黄牛肉','grams':30}],
+  '时蔬拼盘': [{'db':'油菜','grams':100},{'db':'黄瓜','grams':100}]
+};
+function componentMetrics(components){
+  let kcal = 0, protein = 0;
+  const refs = [];
+  (components || []).forEach(c => {
+    const food = getFoodByName(c.db);
+    if (!food) return;
+    const base = parsePortionBase(food.portion);
+    const factor = c.grams / base;
+    kcal += food.kcal * factor;
+    protein += food.protein * factor;
+    refs.push(`${c.db} ${c.grams}g`);
+  });
+  return {kcal, protein, refs};
+}
+function deriveDbMetrics(item){
+  const exact = getFoodByName(item.name);
+  if (exact){
+    const base = parsePortionBase(exact.portion);
+    const factor = item.grams / base;
+    return {
+      baseKcal: exact.kcal * factor,
+      baseProtein: exact.protein * factor,
+      refs: [`${exact.name} ${item.grams}g`]
+    };
+  }
+  const mapped = DISH_COMPONENT_MAP[item.name];
+  if (mapped){
+    const m = componentMetrics(mapped);
+    return {baseKcal: m.kcal, baseProtein: m.protein, refs: m.refs};
+  }
+  const aliases = {
+    '全麦馒头':'全麦面包',
+    '煮鸡蛋':'鸡蛋',
+    '纯牛奶':'脱脂牛奶',
+    '西红柿':'番茄',
+    '牛肉':'黄牛肉'
+  };
+  const aliasName = aliases[item.name];
+  if (aliasName){
+    const food = getFoodByName(aliasName);
+    if (food){
+      const base = parsePortionBase(food.portion);
+      const factor = item.grams / base;
+      return {
+        baseKcal: food.kcal * factor,
+        baseProtein: food.protein * factor,
+        refs: [`${food.name} ${item.grams}g`]
+      };
+    }
+  }
+  return {baseKcal: item.kcal || 0, baseProtein: item.protein || 0, refs: ['模板估算']};
+}
+
+function buildRestrictions(profile){
+  return {
+    lowPurine: profile.uricStage !== '无',
+    acuteGout: profile.uricStage === '痛风急性期',
+    lowSodium: profile.hfStage !== '无' || profile.htnStage !== '无',
+    strictLowSodium: profile.hfStage === 'NYHA III-IV' || profile.htnStage === '2-3级',
+    lowFat: profile.lipidStage !== '无',
+    strictLowFat: profile.lipidStage === '重度',
+    extraProtein: profile.hypoProtein === '有' || profile.mode === '糖尿病足' || profile.ckdStage === '血液透析' || profile.ckdStage === '腹膜透析',
+    anemiaSupport: profile.anemiaStage !== '无',
+    eyeSupport: profile.eyeComp === '有',
+    ckdModerate: ['CKD 3–5期（未透析）'].includes(profile.ckdStage)
+  };
+}
+function templatePenalty(template, profile, preferredStaple){
+  const text = JSON.stringify(template);
+  const r = buildRestrictions(profile);
+  let score = 0;
+  if (preferredStaple && preferredStaple !== '系统自动' && !text.includes(preferredStaple)) score += 12;
+  if (r.lowPurine && /猪肚|虾仁|海虾|白鲢|海带/.test(text)) score += r.acuteGout ? 25 : 10;
+  if (r.strictLowSodium && /蘸酱|盐水|煲仔饭|炒面|锅贴/.test(text)) score += 18;
+  if (r.lowFat && /羊肉|猪肚|炒面|锅贴/.test(text)) score += r.strictLowFat ? 18 : 8;
+  if (r.anemiaSupport && /牛肉|鸡蛋|鸡胸肉|猪瘦肉/.test(text)) score -= 8;
+  if (r.eyeSupport && /番茄|胡萝卜|菠菜|圆白菜|菜心/.test(text)) score -= 6;
+  if (r.ckdModerate && /虾仁|海虾|海带|羊肉/.test(text)) score += 10;
+  return score;
+}
+function scaleMeal(template, targetK, targetP, profile){
+  const derived = template.ingredients.map(it => {
+    const m = deriveDbMetrics(it);
+    return {...it, dbBaseKcal: m.baseKcal, dbBaseProtein: m.baseProtein, dbRefs: m.refs};
+  });
+  const baseK = derived.reduce((s,x)=>s+x.dbBaseKcal,0);
+  const baseP = derived.reduce((s,x)=>s+x.dbBaseProtein,0);
+  let factor = targetK / Math.max(1, baseK);
+  const r = buildRestrictions(profile);
+  if (r.extraProtein && baseP < targetP) factor = Math.max(factor, Math.min(1.35, targetP / Math.max(1, baseP)));
+  if (r.strictLowFat) factor = Math.min(factor, 1.15);
+  if (r.ckdModerate) factor = Math.min(factor, 1.1);
+  const items = derived.map(it => {
+    const grams = Math.max(5, Math.round(it.grams * factor / 5) * 5);
+    const kcal = Math.round(it.dbBaseKcal * factor);
+    const protein = +(it.dbBaseProtein * factor).toFixed(1);
+    return {...it, scaledGrams: grams, scaledKcal: kcal, scaledProtein: protein};
+  });
+  return {
+    name: template.name,
+    items,
+    totalK: items.reduce((s,x)=>s+x.scaledKcal,0),
+    totalP: +(items.reduce((s,x)=>s+x.scaledProtein,0)).toFixed(1)
+  };
+}
+function chooseTemplate(region, mealName, targetK, targetP, profile, preferredStaple){
+  const arr = REGION_TEMPLATES[region][mealName].slice().sort((a,b)=>templatePenalty(a, profile, preferredStaple)-templatePenalty(b, profile, preferredStaple));
+  return scaleMeal(arr[0], targetK, targetP, profile);
+}
+
+function buildRiskSummary(profile, plan){
+  const tags = [];
+  if (profile.ckdStage === 'CKD 3–5期（未透析）') tags.push('CKD 3–5期未透析：低蛋白饮食');
+  else if (profile.ckdStage === '血液透析') tags.push('血液透析：高优质蛋白');
+  else if (profile.ckdStage === '腹膜透析') tags.push('腹膜透析：更高蛋白');
+  if (['心功能III级','心功能IV级'].includes(profile.hfStage)) tags.push(`${profile.hfStage}：严格低盐，必要时控液`);
+  else if (profile.hfStage === '心功能II级') tags.push('心功能II级：进一步低盐');
+  if (profile.htnStage === '2级') tags.push('高血压2级：建议≤4 g/d食盐');
+  if (profile.htnStage === '3级') tags.push('高血压3级：建议≤3 g/d食盐');
+  if (profile.hypoProtein === '有') tags.push('低蛋白血症：优质蛋白优先');
+  if (profile.anemiaStage === '有') tags.push('贫血：富铁+优质蛋白');
+  if (profile.hyperFibrinogen === '有') tags.push('高纤维蛋白原：高纤维低加工');
+  if (profile.mode === '糖尿病足') tags.push('糖尿病足：1/5·2/5·2/5 分餐');
+  return tags;
+}
+
+function buildAttention(profile, totalProtein){
+  const notes = [];
+  const detail = [];
+  notes.push('以糖尿病饮食为基础：定时定量、主食优选低GI、控制总能量，糖尿病足默认按 1/5、2/5、2/5 分餐。');
+  notes.push('基础食养框架：蛋白质 15%–20%，碳水 45%–60%，脂肪 20%–35%；油盐糖均需控制。');
+
+  if (profile.ckdStage !== '无'){
+    notes.push(`CKD 状态：${profile.ckdStage}；当前蛋白目标约 ${totalProtein} g/日。`);
+    if (profile.ckdStage === 'CKD 1–2期'){
+      detail.push('CKD 1–2期：以延缓进展为主；蛋白约 0.8 g/kg·d，避免高蛋白饮食；植物性食物为主，主食可保留全谷物、杂豆、薯类结构；蔬菜约 300–500g/日，深色蔬菜占一半以上；少盐少调味品。');
+    }
+    if (profile.ckdStage === 'CKD 3–5期（未透析）'){
+      detail.push('CKD 3–5期（未透析）：低蛋白饮食是重点，蛋白约 0.6 g/kg·d；主食优化为低蛋白高能量思路，可更多用土豆、山药、藕、粉丝等替代部分米面；低盐；根据检验结果关注钾、磷；避免浓肉汤、老火汤和高度加工食品。');
+    }
+    if (profile.ckdStage === '血液透析'){
+      detail.push('血液透析：总能量仍需足够，蛋白通常提高到约 1.0–1.2 g/kg·d；优质蛋白占比提高；仍要控盐、控高磷、高钾食物，液体管理遵医嘱。');
+    }
+    if (profile.ckdStage === '腹膜透析'){
+      detail.push('腹膜透析：总能量足够前提下蛋白通常高于未透析阶段，约 1.2–1.3 g/kg·d；注意透析液带入葡萄糖后的总能量；控盐并结合检验结果调整钾磷。');
+    }
+    if (profile.ckdStage === '肾移植稳定期'){
+      detail.push('肾移植稳定期：总体回归稳定慢病饮食管理，蛋白可接近 0.8 g/kg·d；低盐、控体重、稳血糖仍是重点。');
+    }
+  }
+
+  if (profile.uricStage === '高尿酸血症稳定期'){
+    detail.push('高尿酸血症稳定期：在糖尿病基础饮食上进一步限制高嘌呤；少动物内脏、少浓汤、少啤酒和含糖饮料；肉类总量适中；低脂乳制品可相对优先。');
+  }
+  if (profile.uricStage === '痛风急性期'){
+    detail.push('痛风急性期：更严格低嘌呤；尽量避免动物内脏、部分海鲜、浓肉汤、酒精和高果糖饮料；以蛋、奶、谷薯、蔬菜为主，必要时肉类进一步压缩。');
+  }
+  if (profile.uricStage === '痛风慢性期'){
+    detail.push('痛风慢性期：仍需持续限制高嘌呤和酒精；在血糖可控前提下多选低脂、低嘌呤、低加工度食物，避免“好转后完全放开”。');
+  }
+
+  if (profile.hfStage === '心功能I级'){
+    detail.push('心功能I级：接近稳定慢病管理，以低盐饮食为主，食盐宜≤5 g/日；避免高钠外卖、咸菜、腌制品和暴饮暴食。');
+  }
+  if (profile.hfStage === '心功能II级'){
+    detail.push('心功能II级：建议进一步低盐，通常按 3–4 g/日食盐强度思路执行；少汤少咸，宜分餐，避免一餐量过大。');
+  }
+  if (profile.hfStage === '心功能III级'){
+    detail.push('心功能III级：中重度心功能受限，通常按 2–3 g/日食盐强度思路执行；宜小量多餐、少汤少钠，必要时结合医生意见控制液体。');
+  }
+  if (profile.hfStage === '心功能IV级'){
+    detail.push('心功能IV级：重度心功能不全，饮食宜更严格低盐，通常按 ≤2 g/日食盐强度思路；高营养密度、易消化、小量多餐，液体管理遵医嘱。');
+  }
+
+  if (profile.htnStage === '正常高值'){
+    detail.push('高血压正常高值：已进入干预窗口；食盐应尽量压至 5 g/日以下；减少腌制、酱制和外卖高钠来源；如肾功能允许，可增加富钾食物。');
+  }
+  if (profile.htnStage === '1级'){
+    detail.push('高血压1级：建议食盐控制在 5 g/日以下；优先 DASH/东方健康膳食模式；限制油炸和高胆固醇食物；在肾功能允许时增加蔬果、豆类和低脂乳制品。');
+  }
+  if (profile.htnStage === '2级'){
+    detail.push('高血压2级：在糖尿病饮食上进一步低盐，建议按 ≤4 g/日食盐强度思路执行；酱油、酱类、鸡精、咸菜等要明显减少；如合并 CKD 不能机械补钾。');
+  }
+  if (profile.htnStage === '3级'){
+    detail.push('高血压3级：更强调严格低盐，可按 ≤3 g/日食盐强度思路执行；避免所有高钠加工食品；配餐更倾向清蒸、白灼、炖煮；合并 CKD 或心功能III-IV级时按更严格限制处理。');
+  }
+
+  if (profile.lipidStage === '轻中度'){
+    detail.push('高脂血症轻中度：脂肪总量需压低，日烹调油通常不超过 25 g；少肥肉、少油炸；增加全谷物、蔬菜和豆类。');
+  }
+  if (profile.lipidStage === '重度'){
+    detail.push('高脂血症重度：严格低脂；优先蒸、煮、炖；减少肥肉、奶油、油酥点心、油炸早餐；同时更重视体重下降和总能量控制。');
+  }
+  if (profile.lipidStage === '高胆固醇血症'){
+    detail.push('高胆固醇血症：更关注胆固醇和饱和脂肪；动物内脏、脑、肥肉、黄油奶油等尽量避免；胆固醇宜 <200 mg/d 的强度管理。');
+  }
+  if (profile.lipidStage === '高甘油三酯血症'){
+    detail.push('高甘油三酯血症：除控脂外，更要控糖、控精制碳水、控酒；含糖饮料、果汁、甜点和夜宵都要严格压缩。');
+  }
+  if (profile.lipidStage === '混合型高脂血症'){
+    detail.push('混合型高脂血症：同时兼顾胆固醇和甘油三酯管理；既要低脂，也要控制精制碳水和酒精。');
+  }
+
+  if (profile.anemiaStage === '有'){
+    detail.push('贫血：在糖尿病可控前提下增加富铁优质蛋白和维生素C搭配；餐时尽量减少浓茶、咖啡影响铁吸收；如合并 CKD，贫血常需结合肾性贫血治疗评估。');
+  }
+
+  if (profile.hypoProtein === '有'){
+    detail.push('低蛋白血症：总能量要先够，再提高优质蛋白比例；若同时合并 CKD，则蛋白总量仍以 CKD 分期目标为上限，不能无限加蛋白。');
+  }
+
+  if (profile.hyperFibrinogen === '有'){
+    detail.push('高纤维蛋白原血症：提示炎症和血栓风险增加；饮食上更重视高纤维、低脂、低加工度，优先全谷物、蔬菜、豆类和富含不饱和脂肪酸食物；减少油炸、肥肉、加工肉、含糖饮料；若无心功能不全或晚期 CKD 等禁忌，注意合理饮水。');
+  }
+
+  if (profile.mode === '糖尿病足'){
+    detail.push('糖尿病足：在控糖基础上更重视创面修复需要；若无 CKD 严格限制，优质蛋白比例可适度提高；长期吃得太少会影响愈合；建议增加n-3脂肪酸摄入（如深海鱼），有助于改善炎症状态并促进伤口愈合。');
+  }
+
+  return notes.concat(detail);
+}
+
+function isCKDLowProtein(profile){
+  return profile.ckdStage === 'CKD 3–5期（未透析）';
+}
+function itemType(item){
+  const refs = (item.dbRefs || []).join(' ');
+  const name = [item.name || '', item.display || '', refs].join(' ');
+  if (/黄牛肉|牛肉|猪肉|羊肉|鸡胸肉|河虾|巴沙鱼|草鱼|鱼|猪肚/.test(name)) return 'animalProtein';
+  if (/鸡蛋/.test(name)) return 'egg';
+  if (/豆腐|豆浆/.test(name)) return 'soy';
+  if (/脱脂牛奶|全脂牛奶|牛奶/.test(name)) return 'milk';
+  if (/米饭|面包|馒头|燕麦片|荞麦面|粉丝|土豆|山药|藕/.test(name)) return 'staple';
+  if (/油菜|番茄|黄瓜|圆白菜|莲藕|胡萝卜|洋葱|芹菜|莴笋|木耳|海带|笋丝|西兰花|生菜|白菜花|青椒|韭菜|菠菜/.test(name)) return 'vegetable';
+  return 'other';
+}
+function cloneMeals(meals){
+  return meals.map(meal => ({
+    ...meal,
+    items: meal.items.map(it => ({...it, dbRefs: Array.isArray(it.dbRefs) ? [...it.dbRefs] : []}))
+  }));
+}
+function updateMealTotals(meal){
+  meal.totalK = Math.round(meal.items.reduce((s,x)=>s+(x.scaledKcal||0),0));
+  meal.totalP = +(meal.items.reduce((s,x)=>s+(x.scaledProtein||0),0)).toFixed(1);
+}
+function optimizeMealsForCKD(profile, meals, totalProteinTarget){
+  if (!isCKDLowProtein(profile)) return meals;
+  const newMeals = cloneMeals(meals);
+  const mealProteinTargets = {'早餐': Math.round(totalProteinTarget*0.20), '午餐': Math.round(totalProteinTarget*0.40), '晚餐': Math.round(totalProteinTarget*0.40)};
+  const mealKTargets = {'早餐': newMeals[0]?.targetK || 0, '午餐': newMeals[1]?.targetK || 0, '晚餐': newMeals[2]?.targetK || 0};
+
+  function typeFactor(t){
+    if (t === 'animalProtein') return 0.45;
+    if (t === 'egg') return 0.55;
+    if (t === 'milk') return 0.6;
+    if (t === 'soy') return 0.65;
+    if (t === 'staple') return 1.10;
+    if (t === 'vegetable') return 1.25;
+    return 1.0;
+  }
+
+  // First pass: strongly suppress protein-dense foods, increase veg slightly
+  newMeals.forEach(meal => {
+    meal.items.forEach(it => {
+      const t = itemType(it);
+      const factor = typeFactor(t);
+      it.scaledGrams = Math.max(5, Math.round(it.scaledGrams * factor / 5) * 5);
+      it.scaledKcal = Math.round(it.scaledKcal * factor);
+      it.scaledProtein = +(it.scaledProtein * factor).toFixed(1);
+    });
+    updateMealTotals(meal);
+  });
+
+  // Second pass: if meal protein still above target, keep trimming dense protein items
+  newMeals.forEach(meal => {
+    let loops = 0;
+    while (meal.totalP > mealProteinTargets[meal.mealName] && loops < 20){
+      loops += 1;
+      const dense = meal.items
+        .filter(it => ['animalProtein','egg','milk','soy'].includes(itemType(it)) && it.scaledGrams > 5)
+        .sort((a,b) => (b.scaledProtein/Math.max(1,b.scaledKcal)) - (a.scaledProtein/Math.max(1,a.scaledKcal)));
+      if (!dense.length) break;
+      const it = dense[0];
+      const t = itemType(it);
+      const step = t === 'animalProtein' ? 10 : 5;
+      const reduceRatio = Math.max(0.75, (it.scaledGrams - step) / Math.max(5,it.scaledGrams));
+      it.scaledGrams = Math.max(5, it.scaledGrams - step);
+      it.scaledKcal = Math.max(0, Math.round(it.scaledKcal * reduceRatio));
+      it.scaledProtein = +(Math.max(0, it.scaledProtein * reduceRatio)).toFixed(1);
+      updateMealTotals(meal);
+    }
+  });
+
+  // Third pass: kcal shortfall should be compensated mainly by staple/vegetable, not protein
+  newMeals.forEach(meal => {
+    let loops = 0;
+    const targetK = mealKTargets[meal.mealName];
+    while (meal.totalK < targetK * 0.88 && loops < 18){
+      loops += 1;
+      const staple = meal.items.find(it => itemType(it) === 'staple');
+      const veg = meal.items.find(it => itemType(it) === 'vegetable');
+      if (staple){
+        staple.scaledGrams += 5;
+        staple.scaledKcal = Math.round(staple.scaledKcal * 1.05);
+        staple.scaledProtein = +(staple.scaledProtein * 1.02).toFixed(1);
+      }
+      if (veg){
+        veg.scaledGrams += 10;
+        veg.scaledKcal = Math.round(veg.scaledKcal * 1.03);
+        veg.scaledProtein = +(veg.scaledProtein * 1.01).toFixed(1);
+      }
+      updateMealTotals(meal);
+      if (meal.totalP > mealProteinTargets[meal.mealName] + 0.8) break;
+    }
+  });
+
+  // Final pass: hard cap by total daily protein
+  let totalP = newMeals.reduce((s,m)=>s+m.totalP,0);
+  let guard = 0;
+  while (totalP > totalProteinTarget + 1 && guard < 25){
+    guard += 1;
+    const allDense = [];
+    newMeals.forEach(meal => {
+      meal.items.forEach(it => {
+        const t = itemType(it);
+        if (['animalProtein','egg','milk','soy'].includes(t) && it.scaledGrams > 5){
+          allDense.push({meal,it,t,density: it.scaledProtein/Math.max(1,it.scaledKcal)});
+        }
+      });
+    });
+    allDense.sort((a,b)=>b.density-a.density);
+    if (!allDense.length) break;
+    const picked = allDense[0];
+    const step = picked.t === 'animalProtein' ? 10 : 5;
+    const oldG = picked.it.scaledGrams;
+    picked.it.scaledGrams = Math.max(5, picked.it.scaledGrams - step);
+    const ratio = picked.it.scaledGrams / Math.max(5, oldG);
+    picked.it.scaledKcal = Math.round(picked.it.scaledKcal * ratio);
+    picked.it.scaledProtein = +(picked.it.scaledProtein * ratio).toFixed(1);
+
+    const staple = picked.meal.items.find(it => itemType(it) === 'staple');
+    if (staple){
+      staple.scaledGrams += 5;
+      staple.scaledKcal = Math.round(staple.scaledKcal * 1.04);
+      staple.scaledProtein = +(staple.scaledProtein * 1.01).toFixed(1);
+    }
+    updateMealTotals(picked.meal);
+    totalP = newMeals.reduce((s,m)=>s+m.totalP,0);
+  }
+
+  // Add meal level notes
+  newMeals.forEach(meal => {
+    meal.ckdNote = '肾病低蛋白优化：以绿叶菜和主食补足体积，动物蛋白与奶蛋豆适度下调，优先保证蛋白不过量。';
+  });
+  return newMeals;
+}
+
+function generatePlan(){
+  const profile = {
+    name: document.getElementById('name').value || '糖友',
+    height: +document.getElementById('height').value,
+    weight: +document.getElementById('weight').value,
+    mode: document.getElementById('mode').value,
+    regionMode: document.getElementById('regionMode').value,
+    activity: document.getElementById('activity').value,
+    edema: document.getElementById('edema').value,
+    ckdStage: document.getElementById('ckdStage').value,
+    uricStage: document.getElementById('uricStage').value,
+    hfStage: document.getElementById('hfStage').value,
+    htnStage: document.getElementById('htnStage').value,
+    lipidStage: document.getElementById('lipidStage').value,
+    anemiaStage: document.getElementById('anemiaStage').value,
+    hypoProtein: document.getElementById('hypoProtein').value,
+    hyperFibrinogen: document.getElementById('hyperFibrinogen').value
+  };
+  if (!profile.height || !profile.weight){ alert('请先填写身高和体重。'); return; }
+
+  const bmi = calcBMI(profile.weight, profile.height);
+  const type = bodyType(bmi);
+  const std = standardWeight(profile.height);
+  const useWeight = dosingWeight(profile.height, profile.weight, profile.edema || '无');
+  const kc = kcalPerKg(type, profile.activity);
+  const totalKcalRaw = Math.round(useWeight * kc);
+  const totalKcal = roundTo45(totalKcalRaw);
+  const proteinInfo = proteinRule(profile);
+  profile.proteinPerKg = proteinInfo.proteinPerKgValue;
+  const totalProtein = proteinInfo.proteinTarget;
+  const targets = mealTargets(totalKcal, profile);
+  const ratios = mealRatio(profile);
+
+  let meals = [
+    chooseTemplate(profile.regionMode, '早餐', targets[0], Math.round(totalProtein * ratios[0]), profile, '系统自动'),
+    chooseTemplate(profile.regionMode, '午餐', targets[1], Math.round(totalProtein * ratios[1]), profile, '系统自动'),
+    chooseTemplate(profile.regionMode, '晚餐', targets[2], Math.round(totalProtein * ratios[2]), profile, '系统自动')
+  ].map((m,i)=>({...m, mealName:['早餐','午餐','晚餐'][i], targetK:targets[i], targetP:Math.round(totalProtein * ratios[i])}));
+
+  meals = optimizeMealsForCKD(profile, meals, totalProtein);
+
+  state.profile = profile;
+  state.plan = {bmi, type, std, useWeight, kc, totalKcalRaw, totalKcal, totalProtein, proteinInfo, meals, riskSummary: buildRiskSummary(profile, {totalProtein}), attention: buildAttention(profile, totalProtein)};
+  saveState(); renderAssessmentPreview(); renderPlan(); renderHome(); showScreen('plan');
+}
+function renderAssessmentPreview(){
+  const box = document.getElementById('assessmentPreview');
+  if (!state.plan){ box.style.display='none'; return; }
+  box.style.display='block';
+  box.innerHTML = `
+    <h3 class="section-title">计算预览</h3>
+    <div class="grid-4">
+      <div class="kpi"><strong>${state.plan.bmi}</strong><span class="tiny">BMI</span></div>
+      <div class="kpi"><strong>${state.plan.type}</strong><span class="tiny">体型</span></div>
+      <div class="kpi"><strong>${state.plan.std}</strong><span class="tiny">标准体重 kg</span></div>
+      <div class="kpi"><strong>${state.plan.useWeight}</strong><span class="tiny">计量体重 kg</span></div>
+    </div>
+    <div class="notice">默认规则：BMI≥24 用标准体重，BMI&lt;24 用实际体重；若有水肿/明显液体潴留，也改用标准体重。总能量原始值 ${state.plan.totalKcalRaw} kcal，配餐总目标 ${state.plan.totalKcal} kcal。</div>
+    <div class="notice">蛋白计算：${state.plan.proteinInfo.ruleText}；当前按${state.plan.proteinInfo.weightBasisText} ${state.plan.proteinInfo.useWeight} kg 计算，目标约 ${state.plan.totalProtein} g/日。</div>
+    <div class="notice">风险摘要：${state.plan.riskSummary.join('；')}</div>
+    ${state.profile && state.profile.ckdStage === 'CKD 3–5期（未透析）' ? '<div class="notice">已启用 CKD 严格低蛋白算法，三餐会优先向低蛋白高能量方向修正。</div>' : ''}
+  `;
+}
+function renderPlan(){
+  const box = document.getElementById('planContent');
+  if (!state.plan || !state.profile){ box.innerHTML='<div class="empty">请先完成评估并生成方案。</div>'; return; }
+  const p = state.plan, u = state.profile;
+  box.innerHTML = `
+    <h3 class="section-title">${u.name} 的地区指南饮食处方</h3>
+    <div class="grid-4">
+      <div class="kpi"><strong>${p.totalKcal}</strong><span class="tiny">配餐总目标 kcal</span></div>
+      <div class="kpi"><strong>${p.totalProtein}</strong><span class="tiny">每日蛋白 g</span></div>
+      <div class="kpi"><strong>${u.regionMode}</strong><span class="tiny">地区模式</span></div>
+      <div class="kpi"><strong>${u.mode === '糖尿病足' ? '1/5·2/5·2/5' : '3/10·4/10·3/10'}</strong><span class="tiny">三餐比例</span></div>
+    </div>
+
+    <div class="result-box">
+      <div class="notice">当前已根据地区模板 + 并发症分期分级对食谱与剂量做动态调整；食材的kcal和蛋白优先按内置食物数据库折算。对于CKD 3–5期未透析患者，系统按“蛋白优先于kcal”的肾病临床逻辑处理。</div>
+      <div class="notice">风险摘要：${p.riskSummary.join('；')}</div>
+      <div class="notice">蛋白规则：${p.proteinInfo.ruleText}；当前按${p.proteinInfo.weightBasisText} ${p.proteinInfo.useWeight} kg 计算，目标蛋白 ${p.totalProtein} g/日。</div>
+      ${u.ckdStage === 'CKD 3–5期（未透析）' ? '<div class="notice">已启用 CKD 肾病临床版优化：蛋白优先于kcal，优先减少肉、蛋、奶、豆制品，增加绿叶菜和适量主食回补体积与部分能量。</div>' : ''}
+      ${p.meals.map(meal => `
+        <div class="meal-item">
+          <strong>${meal.mealName}｜${meal.name}</strong>
+          <div class="tiny">目标：${meal.targetK} kcal / 蛋白 ${meal.targetP} g</div>
+          <div class="notice">本餐实际：${meal.totalK} kcal，蛋白 ${meal.totalP} g</div>
+          ${meal.ckdNote ? `<div class="tiny">${meal.ckdNote}</div>` : ''}
+          ${meal.items.map(it => `
+            <div class="food-item">
+              <strong>${it.display}</strong>
+              <div class="tiny">建议量：${it.scaledGrams} g；约 ${it.scaledKcal} kcal；蛋白 ${it.scaledProtein} g</div>
+              <div class="tiny">数据库对齐：${(it.dbRefs && it.dbRefs.length ? it.dbRefs.join(' + ') : '未找到精确匹配，按模板估算')}</div>
+            </div>
+          `).join('')}
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="result-box">
+      <h3 class="section-title">分期分级饮食提示</h3>
+      <ul class="list">${p.attention.map(x => `<li>${x}</li>`).join('')}</ul>
+    </div>
+  `;
+}
+
+function normalizeCategory(cat){
+  const c = cat || '';
+  if (c.includes('主食')) return '主食';
+  if (c.includes('蔬菜')) return '蔬菜';
+  if (c.includes('水果')) return '水果';
+  if (c.includes('乳')) return '乳类';
+  if (c.includes('豆')) return '豆类';
+  if (c.includes('油')) return '油脂';
+  if (c.includes('肉') || c.includes('蛋')) return '肉蛋';
+  return c || '其他';
+}
+function foodCategorySimple(f){
+  return normalizeCategory(foodCategory(f));
+}
+function getPortionMultiplier(type){
+  if (type === '0.5') return 0.5;
+  if (type === '2') return 2;
+  return 1;
+}
+function exchangePortionLabel(type){
+  return type === '0.5' ? '半份' : (type === '2' ? '2份' : '1份');
+}
+function scaledFoodMetrics(f, mult){
+  return {
+    gramsText: `${f.portion} × ${mult}`,
+    kcal: Math.round((f.kcal || 0) * mult),
+    protein: +((f.protein || 0) * mult).toFixed(1),
+    carb: +((f.carb || 0) * mult).toFixed(1),
+    fat: +((f.fat || 0) * mult).toFixed(1)
+  };
+}
+function passesConditionFilter(f, condition){
+  const name = foodName(f);
+  const cat = foodCategorySimple(f);
+  if (condition === '通用') return true;
+  if (condition === 'CKD'){
+    return !/海带|紫菜|虾|河虾|羊肉|猪肝|动物内脏|坚果|花生米|豆腐皮|腐竹/.test(name);
+  }
+  if (condition === '高尿酸'){
+    return !/猪肝|猪心|鸭血|河虾|海参|扇贝|鲍鱼|草鱼|黄牛肉|羊肉|动物内脏/.test(name);
+  }
+  if (condition === '高血压'){
+    return !/咸|酱|火腿|香肠|腌/.test(name);
+  }
+  if (condition === '低脂'){
+    return (f.fat || 0) <= 5;
+  }
+  if (condition === '低蛋白'){
+    return (f.protein || 0) <= 5 || cat === '主食' || cat === '蔬菜' || cat === '水果' || cat === '油脂';
+  }
+  return true;
+}
+function giPass(f, giNeed){
+  if (giNeed === '全部') return true;
+  const gi = f.gi || '友好';
+  return gi === giNeed;
+}
+function kcalPass(f, kcalBand){
+  if (kcalBand === '全部') return true;
+  const target = parseInt(kcalBand, 10);
+  return Math.abs((f.kcal || 0) - target) <= 15;
+}
+function buildFoodCard(f, mult=1){
+  const m = scaledFoodMetrics(f, mult);
+  return `
+    <div class="food-item">
+      <strong>${foodName(f)}</strong>
+      <span class="tag blue">${foodCategorySimple(f)}</span>
+      <span class="tag ${((f.gi||'') === '高') ? 'red' : (((f.gi||'') === '中') ? 'yellow' : 'green')}">${f.gi || '友好'}</span>
+      <div class="tiny">${exchangePortionLabel(String(mult))}：${m.gramsText}</div>
+      <div class="tiny">约 ${m.kcal} kcal；蛋白 ${m.protein} g；碳水 ${m.carb} g；脂肪 ${m.fat} g</div>
+    </div>`;
+}
+function renderExchangeFoods(){
+  const category = document.getElementById('exchangeCategory').value;
+  const portionType = document.getElementById('exchangePortionType').value;
+  const giNeed = document.getElementById('exchangeGI').value;
+  const condition = document.getElementById('exchangeCondition').value;
+  const mult = getPortionMultiplier(portionType);
+
+  let items = FOODS.filter(f => foodCategorySimple(f) === category);
+  items = items.filter(f => giPass(f, giNeed));
+  items = items.filter(f => passesConditionFilter(f, condition));
+
+  if (category === '主食'){
+    items = items.filter(f => Math.abs((f.kcal || 0) - 90) <= 25 || portionType !== '1');
+  }
+  items = items.sort((a,b) => (a.kcal||0) - (b.kcal||0));
+
+  const box = document.getElementById('exchangeResult');
+  if (!items.length){
+    box.innerHTML = '<div class="empty">当前条件下未找到合适食物。</div>';
+    return;
+  }
+  box.innerHTML = `
+    <div class="notice">当前显示：${category}｜${exchangePortionLabel(portionType)}｜${giNeed}｜${condition}</div>
+    ${items.map(f => buildFoodCard(f, mult)).join('')}
+  `;
+}
+function renderFilteredFoods(){
+  const category = document.getElementById('filterCategory').value;
+  const kcalBand = document.getElementById('filterKcal').value;
+  const giNeed = document.getElementById('filterGI').value;
+  const condition = document.getElementById('filterCondition').value;
+
+  let items = FOODS.slice();
+  if (category !== '全部') items = items.filter(f => foodCategorySimple(f) === category);
+  items = items.filter(f => kcalPass(f, kcalBand));
+  items = items.filter(f => giPass(f, giNeed));
+  items = items.filter(f => passesConditionFilter(f, condition));
+  items = items.sort((a,b) => (a.kcal||0) - (b.kcal||0));
+
+  const box = document.getElementById('filterResult');
+  if (!items.length){
+    box.innerHTML = '<div class="empty">当前条件下未找到合适食物。</div>';
+    return;
+  }
+  box.innerHTML = `
+    <div class="notice">筛选结果：${category}｜${kcalBand}｜${giNeed}｜${condition}</div>
+    ${items.slice(0,60).map(f => buildFoodCard(f, 1)).join('')}
+  `;
+}
+function collectPlanFoods(){
+  if (!state.plan || !state.plan.meals) return [];
+  const arr = [];
+  state.plan.meals.forEach(meal => {
+    meal.items.forEach((it, idx) => {
+      arr.push({
+        id: `${meal.mealName}_${idx}`,
+        mealName: meal.mealName,
+        name: it.name || it.display || '食物',
+        display: it.display || it.name || '食物',
+        scaledKcal: it.scaledKcal || 0,
+        scaledProtein: it.scaledProtein || 0,
+        dbRefs: it.dbRefs || [],
+        type: itemType(it)
+      });
+    });
+  });
+  return arr;
+}
+function replaceCategoryFromItem(planItem){
+  const t = planItem.type;
+  if (t === 'animalProtein' || t === 'egg') return '肉蛋';
+  if (t === 'milk') return '乳类';
+  if (t === 'soy') return '豆类';
+  if (t === 'staple') return '主食';
+  if (t === 'vegetable') return '蔬菜';
+  return '其他';
+}
+function renderReplaceSource(){
+  const box = document.getElementById('replaceSource');
+  const items = collectPlanFoods();
+  if (!items.length){
+    box.innerHTML = '<div class="empty">请先生成方案，再查看方案替换。</div>';
+    return;
+  }
+  box.innerHTML = `
+    <div class="notice">点击下面任一方案食物，查看同类别替换。</div>
+    <div class="option-list">
+      ${items.map(it => `<button class="option-pill" onclick="renderReplacementOptions('${it.id}')">${it.mealName}｜${it.display}</button>`).join('')}
+    </div>
+  `;
+}
+function renderReplacementOptions(itemId){
+  const items = collectPlanFoods();
+  const target = items.find(x => x.id === itemId);
+  const box = document.getElementById('replaceResult');
+  if (!target){
+    box.innerHTML = '<div class="empty">未找到目标食物。</div>';
+    return;
+  }
+  const category = replaceCategoryFromItem(target);
+  const condition = state.profile?.ckdStage === 'CKD 3–5期（未透析）' ? '低蛋白' :
+                    (state.profile?.uricStage !== '无' ? '高尿酸' :
+                    (state.profile?.htnStage !== '无' ? '高血压' : '通用'));
+  let items2 = FOODS.filter(f => foodCategorySimple(f) === category);
+  items2 = items2.filter(f => passesConditionFilter(f, condition));
+  items2 = items2.sort((a,b) => Math.abs((a.kcal||0) - target.scaledKcal) - Math.abs((b.kcal||0) - target.scaledKcal));
+  box.innerHTML = `
+    <div class="notice">当前替换目标：${target.mealName}｜${target.display}（约 ${target.scaledKcal} kcal，蛋白 ${target.scaledProtein} g）</div>
+    <div class="notice">推荐规则：同类别 + 接近当前交换份 + 结合当前患者条件（${condition}）</div>
+    ${items2.slice(0,12).map(f => buildFoodCard(f, 1)).join('')}
+  `;
+}
+function showFoodTab(tab){
+  const exchange = document.getElementById('foodExchangePanel');
+  const filter = document.getElementById('foodFilterPanel');
+  const replace = document.getElementById('foodReplacePanel');
+  if (exchange) exchange.style.display = tab === 'exchange' ? '' : 'none';
+  if (filter) filter.style.display = tab === 'filter' ? '' : 'none';
+  if (replace) replace.style.display = tab === 'replace' ? '' : 'none';
+
+  const b1 = document.getElementById('foodTabExchange');
+  const b2 = document.getElementById('foodTabFilter');
+  const b3 = document.getElementById('foodTabReplace');
+  if (b1) b1.className = tab === 'exchange' ? '' : 'btn-secondary';
+  if (b2) b2.className = tab === 'filter' ? '' : 'btn-secondary';
+  if (b3) b3.className = tab === 'replace' ? '' : 'btn-secondary';
+
+  if (tab === 'exchange') renderExchangeFoods();
+  if (tab === 'filter') renderFilteredFoods();
+  if (tab === 'replace') renderReplaceSource();
+}
+
+function renderHome(){
+  document.getElementById('dbInfo').innerHTML = `已载入食物 ${FOODS.length} 项；地区模式 ${Object.keys(REGION_TEMPLATES).length} 个；按临床精简评估生成三餐，并根据CKD、心功能、高血压及营养状态动态调剂克数。`;
+  if (!state.plan){
+    document.getElementById('homeKcal').textContent='--';
+    document.getElementById('homeProtein').textContent='--';
+    document.getElementById('homeBMI').textContent='--';
+    document.getElementById('homeBodyType').textContent='--';
+    return;
+  }
+  document.getElementById('homeKcal').textContent = state.plan.totalKcal;
+  document.getElementById('homeProtein').textContent = state.plan.totalProtein;
+  document.getElementById('homeBMI').textContent = state.plan.bmi;
+  document.getElementById('homeBodyType').textContent = state.plan.type;
+}
+
+function fillDemo(){
+  document.getElementById('name').value = '王震';
+  document.getElementById('height').value = 172;
+  document.getElementById('weight').value = 65;
+  document.getElementById('mode').value = '糖尿病足';
+  document.getElementById('regionMode').value = '华北地区';
+  document.getElementById('activity').value = '卧床';
+  document.getElementById('edema').value = '无';
+  document.getElementById('ckdStage').value = 'CKD 3–5期（未透析）';
+  document.getElementById('uricStage').value = '高尿酸血症稳定期';
+  document.getElementById('hfStage').value = '心功能IV级';
+  document.getElementById('htnStage').value = '3级';
+  document.getElementById('lipidStage').value = '高胆固醇血症';
+  document.getElementById('anemiaStage').value = '有';
+  document.getElementById('hypoProtein').value = '有';
+  document.getElementById('hyperFibrinogen').value = '无';
+}
+function resetForm(){
+  ['name','height','weight'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('mode').value = '糖尿病足';
+  document.getElementById('regionMode').value = '清淡通用';
+  document.getElementById('activity').value = '轻体力劳动';
+  document.getElementById('edema').value = '无';
+  ['edema','ckdStage','uricStage','hfStage','htnStage','lipidStage','anemiaStage','hypoProtein','hyperFibrinogen'].forEach(id => document.getElementById(id).selectedIndex = 0);
+}
+function loadState(){
+  if (!state.profile) return;
+  const p = state.profile;
+  ['name','height','weight','mode','regionMode','activity','edema','ckdStage','uricStage','hfStage','htnStage','lipidStage','anemiaStage','hypoProtein','hyperFibrinogen']
+    .forEach(id => { if (p[id] !== undefined) document.getElementById(id).value = p[id]; });
+  renderAssessmentPreview();
+}
+loadState();
+renderHome();
+renderPlan();
+renderExchangeFoods();
+renderFilteredFoods();
+renderReplaceSource();
+</script>
+</body>
+</html>
