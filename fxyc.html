@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0f766e" />
+<title>足病风险预测</title>
+<style>
+  :root{
+    --bg1:#ecfeff;
+    --bg2:#f8fafc;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --line:#e2e8f0;
+    --brand:#0f766e;
+    --brand2:#14b8a6;
+    --low-bg:#ecfdf5;
+    --low:#166534;
+    --mid-bg:#fffbeb;
+    --mid:#a16207;
+    --high-bg:#fef2f2;
+    --high:#b91c1c;
+    --shadow:0 12px 30px rgba(15, 23, 42, .08);
+    --radius:20px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+  body{min-height:100vh}
+  .page{max-width:560px;margin:0 auto;padding:18px 14px 28px}
+  .hero{
+    background:linear-gradient(135deg,#0f766e,#14b8a6);
+    color:#fff;
+    border-radius:24px;
+    padding:22px 18px;
+    box-shadow:var(--shadow);
+  }
+  .hero h1{margin:0;font-size:28px;line-height:1.15;font-weight:800;letter-spacing:.5px}
+  .hero p{margin:10px 0 0;font-size:14px;line-height:1.6;opacity:.94}
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px 16px;
+    margin-top:14px;
+  }
+  .section-title{font-size:17px;font-weight:800;margin:0 0 4px}
+  .section-tip{margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.5}
+  .field{margin-bottom:14px}
+  .field:last-child{margin-bottom:0}
+  label{display:block;font-size:14px;font-weight:700;margin-bottom:8px}
+  select,input{
+    width:100%;
+    min-height:52px;
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    background:#fff;
+    padding:0 14px;
+    font-size:16px;
+    color:var(--text);
+    outline:none;
+    transition:.2s border-color,.2s box-shadow;
+  }
+  input:focus,select:focus{border-color:var(--brand2);box-shadow:0 0 0 4px rgba(20,184,166,.12)}
+  .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+  button{
+    min-height:52px;
+    border:none;
+    border-radius:16px;
+    font-size:16px;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff}
+  .btn-secondary{background:#f1f5f9;color:#0f172a}
+  .result{
+    display:none;
+    margin-top:14px;
+    border-radius:20px;
+    padding:16px;
+    border:1px solid transparent;
+  }
+  .result.show{display:block}
+  .risk-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:94px;
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:15px;
+    font-weight:800;
+  }
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .mini{
+    background:rgba(255,255,255,.72);
+    border-radius:16px;
+    padding:12px;
+  }
+  .mini .k{font-size:12px;color:var(--muted);margin-bottom:6px}
+  .mini .v{font-size:18px;font-weight:800}
+  .advice{
+    margin-top:12px;
+    background:rgba(255,255,255,.72);
+    border-radius:16px;
+    padding:13px;
+    font-size:14px;
+    line-height:1.7;
+  }
+  .low{background:var(--low-bg);color:var(--low);border-color:#bbf7d0}
+  .mid{background:var(--mid-bg);color:var(--mid);border-color:#fde68a}
+  .high{background:var(--high-bg);color:var(--high);border-color:#fecaca}
+  .note{
+    margin-top:14px;
+    padding:14px;
+    border-radius:16px;
+    background:#f8fafc;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.6;
+    border:1px solid #e5e7eb;
+  }
+  .footer{margin-top:14px;text-align:center;color:var(--muted);font-size:12px;line-height:1.6}
+  @media (max-width:420px){
+    .hero h1{font-size:24px}
+    .btns{grid-template-columns:1fr}
+    .result-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <h1>足病风险预测</h1>
+      <p>请根据自己的情况完成下面 4 项选择，系统将自动给出风险提示。本页面仅用于健康提醒，不能代替医生面诊。</p>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">请填写您的情况</h2>
+      <p class="section-tip">适合手机扫码查看，选项已尽量简化，几秒钟即可完成。</p>
+
+      <div class="field">
+        <label for="locInput">1. 溃疡部位</label>
+        <select id="locInput">
+          <option value="1">前脚掌</option>
+          <option value="2">中足</option>
+          <option value="3">脚跟</option>
+          <option value="4">脚趾</option>
+          <option value="5">脚背</option>
+          <option value="6">踝部</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="duration">2. 糖尿病病程</label>
+        <select id="duration">
+          <option value="1">1 年以内</option>
+          <option value="3">1–5 年</option>
+          <option value="8">5–10 年</option>
+          <option value="12">10 年以上</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="history">3. 以前有过足部溃疡吗</label>
+        <select id="history">
+          <option value="0">没有</option>
+          <option value="1">有</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="deformity">4. 有没有足部畸形</label>
+        <select id="deformity">
+          <option value="0">没有</option>
+          <option value="1">有</option>
+        </select>
+      </div>
+
+      <div class="btns">
+        <button class="btn-primary" id="calcBtn">立即预测</button>
+        <button class="btn-secondary" id="resetBtn" type="button">重新填写</button>
+      </div>
+
+      <div id="result" class="result">
+        <div class="risk-badge" id="riskBadge">-</div>
+        <div class="result-grid">
+          <div class="mini">
+            <div class="k">预测风险</div>
+            <div class="v" id="probVal">-</div>
+          </div>
+          <div class="mini">
+            <div class="k">风险提示</div>
+            <div class="v" id="riskText">-</div>
+          </div>
+        </div>
+        <div class="advice" id="adviceText">-</div>
+      </div>
+
+      <div class="note">
+        温馨提示：如已出现红、肿、热、痛、破溃、流液、发黑、异味等情况，请尽快到医院就诊，不要自行处理。
+      </div>
+    </section>
+
+    <div class="footer">
+      本工具仅作健康教育参考，结果需结合医生评估。
+    </div>
+  </main>
+
+<script>
+  const model = {
+    intercept: -3.561,
+    loc: 1.000,
+    duration: 0.074,
+    history: 0.417,
+    deformity: 1.960,
+    thresholdLow: 0.10,
+    thresholdMid: 0.20
+  };
+
+  function sigmoid(x){
+    if (x >= 0) {
+      const z = Math.exp(-x);
+      return 1 / (1 + z);
+    }
+    const z = Math.exp(x);
+    return z / (1 + z);
+  }
+
+  function getPlantarFlag(locValue){
+    return ["1", "2", "3"].includes(String(locValue)) ? 1 : 0;
+  }
+
+  function toPercent(value){
+    return (value * 100).toFixed(1) + "%";
+  }
+
+  function getAdvice(level){
+    if(level === "低风险"){
+      return "当前提示为低风险，但也不能大意。建议每天看脚、保持鞋袜合适、避免赤脚行走，如有破损及时就医。";
+    }
+    if(level === "中风险"){
+      return "当前提示为中风险。建议尽快接受足部专科评估，规律控糖，减少足部受压和摩擦，发现异常尽早处理。";
+    }
+    return "当前提示为高风险。建议尽快到足病专科或相关门诊就诊，不要拖延，不要自行修脚、挑破水泡或用偏方处理伤口。";
+  }
+
+  function renderResult(prob, level){
+    const result = document.getElementById("result");
+    const badge = document.getElementById("riskBadge");
+    const probVal = document.getElementById("probVal");
+    const riskText = document.getElementById("riskText");
+    const adviceText = document.getElementById("adviceText");
+
+    result.className = "result show";
+    if(level === "低风险") result.classList.add("low");
+    if(level === "中风险") result.classList.add("mid");
+    if(level === "高风险") result.classList.add("high");
+
+    badge.textContent = level;
+    badge.className = "risk-badge " + (level === "低风险" ? "low" : level === "中风险" ? "mid" : "high");
+    probVal.textContent = toPercent(prob);
+    riskText.textContent = level;
+    adviceText.textContent = getAdvice(level);
+  }
+
+  function calculateRisk(){
+    const loc = document.getElementById("locInput").value;
+    const duration = Number(document.getElementById("duration").value || 0);
+    const history = Number(document.getElementById("history").value || 0);
+    const deformity = Number(document.getElementById("deformity").value || 0);
+
+    const plantar = getPlantarFlag(loc);
+    const logit = model.intercept
+      + model.loc * plantar
+      + model.duration * duration
+      + model.history * history
+      + model.deformity * deformity;
+
+    const prob = sigmoid(logit);
+    let level = "低风险";
+    if(prob >= model.thresholdMid) level = "高风险";
+    else if(prob >= model.thresholdLow) level = "中风险";
+
+    renderResult(prob, level);
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"nearest"});
+  }
+
+  function resetForm(){
+    document.getElementById("locInput").selectedIndex = 0;
+    document.getElementById("duration").selectedIndex = 0;
+    document.getElementById("history").selectedIndex = 0;
+    document.getElementById("deformity").selectedIndex = 0;
+    const result = document.getElementById("result");
+    result.className = "result";
+  }
+
+  document.getElementById("calcBtn").addEventListener("click", calculateRisk);
+  document.getElementById("resetBtn").addEventListener("click", resetForm);
+</script>
+</body>
+</html>
